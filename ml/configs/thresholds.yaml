@@ -1,0 +1,47 @@
+# Configurable thresholds. Nothing here is a magic number in code
+# (master prompt §16: "Thresholds must be configurable").
+
+skill_engine:
+  min_evidence_for_high_confidence: 3
+  decay_half_life_days: 90 # older evidence counts for less
+  low_confidence_floor: 0.35
+
+evaluation:
+  needs_human_review_confidence_below: 0.65
+  ai_grading_max_score: 100
+
+rag:
+  min_similarity_to_retrieve: 0.55
+  min_similarity_to_ground_answer: 0.62
+  top_k_retrieve: 12
+  top_k_after_rerank: 5
+
+recommendation:
+  max_question_reexposure: 0 # 0 = never show the same question twice by default
+  exploration_epsilon: 0.1 # small chance to surface a lower-scored question for diversity
+
+adaptive_assessment:
+  min_skill_confidence_to_adapt: 0.3
+  max_difficulty_delta: 0.25 # how far from candidate level we'll deviate for calibration
+  exploration_rate: 0.1 # chance to pick an exploratory question instead of pure skill-gap
+
+candidate_matching:
+  strong_match_floor: 0.8
+  potential_match_floor: 0.6
+  needs_review_floor: 0.4
+
+integrity:
+  clean_min: 90
+  minor_flags_min: 70
+  suspicious_min: 40
+  ast_similarity_high_risk_pct: 70
+
+code_similarity:
+  high_similarity_threshold: 0.7
+  medium_similarity_threshold: 0.4
+
+study_assistant:
+  min_confidence_for_grounded: 0.6
+
+content_generation:
+  requires_human_review_default: true

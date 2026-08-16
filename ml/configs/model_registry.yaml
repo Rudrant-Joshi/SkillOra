@@ -1,0 +1,53 @@
+# Logical model roles -> concrete provider/model bindings.
+# Services request a ROLE (e.g. "code_review_llm"), never a hard-coded
+# model name, so any binding here can be swapped without touching
+# service code (master prompt §24 Model Router).
+
+code_review_llm:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  version: "1.0"
+  purpose: "Semantic code review reasoning where static analysis is insufficient"
+
+assessment_grading_llm:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  version: "1.0"
+  purpose: "AI-assisted grading of free-text/system-design/short-answer responses"
+
+rag_answer_llm:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  version: "1.0"
+  purpose: "Grounded answer generation from retrieved context"
+
+embedding_model:
+  provider: sentence-transformers
+  model: all-MiniLM-L6-v2
+  version: "1.0"
+  purpose: "Text/code embeddings for RAG retrieval and semantic search"
+  dimensions: 384
+
+reranker_model:
+  provider: cross-encoder
+  model: ms-marco-MiniLM-L-6-v2
+  version: "1.0"
+  purpose: "Reranking top-K retrieved chunks before context construction"
+
+study_assistant_llm:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  version: "1.0"
+  purpose: "Personalized explanations, study plans, flashcards, quiz generation"
+
+matching_reranker:
+  provider: cross-encoder
+  model: ms-marco-MiniLM-L-6-v2
+  version: "1.0"
+  purpose: "Reranking candidate-job match signals"
+
+integrity_risk_model:
+  provider: local
+  model: statistical-anomaly-v1
+  version: "1.0"
+  purpose: "Statistical anomaly detection on proctoring signals"

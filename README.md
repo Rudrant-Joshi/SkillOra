@@ -1,7 +1,7 @@
 # Skillora
 
-A unified developer platform where your coding activity — code you push, problems
-you solve, and contributions you make — automatically builds your public
+A unified developer platform where your coding activity — code you push,problems
+you solve,and contributions you make — automatically builds your public
 developer profile. No separate "write your bio" step: the profile is *earned*, not
 authored.
 

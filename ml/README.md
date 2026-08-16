@@ -139,6 +139,18 @@ uvicorn gateway.main:app --reload --port 8000
 pytest tests/ -v
 ```
 
+## Accuracy / evaluation
+
+After calibration, measure model quality on the labeled seed data:
+
+```bash
+python scripts/evaluate_accuracy.py
+```
+
+This prints regression (MAE/RMSE/R²) and classification accuracy for each model,
+writes `evaluation/accuracy_report.json`, and a per-example labeled-vs-predicted
+`evaluation/predictions.jsonl` so every prediction is traceable to its label.
+
 ## Demo / seed data (connective tissue)
 
 `datasets/seed_profiles.py` generates a small, deterministic social graph of fake

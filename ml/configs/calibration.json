@@ -1,0 +1,25 @@
+{
+  "problem_difficulty": {
+    "bias": 0.0109503277283781,
+    "length": -0.8203850569955778,
+    "keyword": 0.16195640330336442,
+    "test_case": 2.0533645332322896,
+    "constraint": 1.3154514889962619,
+    "starter": -0.21148858116566885,
+    "topic": 0.018415427917298957
+  },
+  "reputation": {
+    "activity_volume": 0.9431814132360761,
+    "problem_solving": 0.09490048308953031,
+    "code_quality": 0.07132543849551018,
+    "network": 2.8670733929784666,
+    "profile_completeness": 3.6183603298316815,
+    "verified_skills": 0.19237903202414863
+  },
+  "activity_feed": {
+    "recency": 0.21975613590804738,
+    "social": 0.043951227185721906,
+    "skill_relevance": 0.2420450083302435,
+    "engagement": 0.6020023284025776
+  }
+}

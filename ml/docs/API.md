@@ -270,3 +270,168 @@ approve before publishing.
 **Critical**: AI must not silently publish an assessment.
 
 **Latency**: ~1-3s (LLM bound).
+
+---
+
+## POST /ml/profile/summary · /ml/profile/infer-skills · /ml/profile/completeness (Phase 1.5)
+
+The DevConnect connective-tissue ML: a developer's profile is earned from
+activity, not written. These endpoints turn raw activity (snippets, problem
+submissions, follows) into an auto-generated profile.
+
+### POST /ml/profile/infer-skills
+
+**Input** (`InferSkillsFromActivityRequest`): `user_id`,
+`activities[]` (each `{activity_type, title, description?, language?, skills_mentioned[], created_at}`),
+`current_skills` (map).
+
+**Output prediction** (`InferredSkillsPrediction`): `inferred_skills[]`
+(`{skill, inferred_level 0..1, confidence, evidence[]}`), `new_skills_detected[]`, `confidence`.
+
+**Model**: `profile-intelligence-v1`. Deterministic: language → primary skill,
+framework keywords → framework skill, problem topics → algorithm/concept
+skills. Each signal feeds the Bayesian `estimate_skill` (§8) so inferred
+levels carry confidence and decay with age.
+
+### POST /ml/profile/summary
+
+**Input** (`GenerateProfileSummaryRequest`): `user_id`, `username`, `bio?`,
+`activities[]`, `current_skills`.
+**Output prediction** (`ProfileSummaryPrediction`): `summary`, `top_skills[]`,
+`suggested_headline`, `activity_count`, `profile_strength`
+(`empty|emerging|active|established`).
+**Model**: `profile-intelligence-v1`. Deterministic summary + headline; uses
+`profile_summary_llm` role when available, degrades to templated summary.
+
+### POST /ml/profile/completeness
+
+**Input** (`ScoreProfileCompletenessRequest`): `user_id`, `username`, `bio?`,
+`activities[]`, `current_skills`.
+**Output prediction** (`ProfileCompletenessPrediction`): `completeness_score`
+(0-100), `band`, `missing_fields[]`, `suggestions[]`, `verification_eligible`.
+
+**Latency**: <10ms (pure computation).
+
+---
+
+## POST /ml/feed/rank · /ml/feed/trending · /ml/connections/suggest (Phase 1.5)
+
+Activity feed intelligence for the social graph.
+
+### POST /ml/feed/rank
+
+**Input** (`RankFeedRequest`): `viewer_id`, `viewer_skills`, `followed_user_ids[]`,
+`candidate_pool[]` (`FeedActivityInput`), `top_k`.
+**Output prediction** (`RankFeedPrediction`): `ranked_items[]`
+(`{activity_id, user_id, activity_type, score, reason}`), `total_scored`, `diversity_applied`.
+
+**Model**: `activity-feed-v1` / `feed-ranking-model`. Weighted blend of
+recency (0.25), social-graph (0.30, followed users boosted), skill relevance
+(0.25, overlap with viewer skills), engagement (0.20). A per-type cap enforces
+feed diversity when the pool is large.
+
+### POST /ml/feed/trending
+
+**Input** (`DetectTrendingRequest`): `window_days`, `category`
+(`skills|topics|languages`), `recent_activities[]`, `top_k`.
+**Output prediction** (`TrendingPrediction`): `trending_items[]`
+(`{item, score, velocity, category}`).
+
+**Model**: `trending-detector-model`. Velocity-based: compares recent-half vs
+early-half counts within the window.
+
+### POST /ml/connections/suggest
+
+**Input** (`SuggestConnectionsRequest`): `user_id`, `viewer_skills`,
+`candidate_users[]` (`{user_id, username, skills[]}`), `limit`.
+**Output prediction** (`SuggestConnectionsPrediction`): `suggestions[]`
+(`{user_id, username, match_score, reason, shared_skills[]}`).
+
+**Latency**: <20ms.
+
+---
+
+## POST /ml/problem/difficulty/estimate · /ml/problem/difficulty/calibrate (Phase 1.5)
+
+Difficulty estimation for the judge problem bank.
+
+### POST /ml/problem/difficulty/estimate
+
+**Input** (`EstimateDifficultyRequest`): `title`, `description`,
+`starter_code?`, `language?`, `test_cases_count?`, `constraints_count?`, `topics[]`.
+**Output prediction** (`DifficultyPrediction`): `difficulty` (0-1),
+`difficulty_label` (`easy|medium|hard`), `confidence`, `reasoning`, `signal_scores{}`.
+
+**Model**: `problem-difficulty-model`. Heuristic from description length,
+hard/easy keywords, test-case density, constraint count, starter complexity.
+
+### POST /ml/problem/difficulty/calibrate
+
+**Input** (`CalibrateDifficultyRequest`): `problem_id`, `title`,
+`submission_outcomes[]` (`{passed, runtime_ms?, attempts}`), `prior_difficulty`.
+**Output prediction** (`CalibratedDifficultyPrediction`): `calibrated_difficulty`,
+`difficulty_label`, `confidence`, `sample_size`, `pass_rate`, `reasoning`.
+
+**Model**: `problem-difficulty-model`. Blends prior with submission-derived
+difficulty; trust grows with sample size (full trust at
+`problem_difficulty.trust_full_at_n` submissions).
+
+**Latency**: <10ms.
+
+---
+
+## POST /ml/learning/path · /ml/learning/next-milestone (Phase 1.5)
+
+Personalized learning guidance built on top of the skill engine.
+
+### POST /ml/learning/path
+
+**Input** (`GeneratePathRequest`): `user_id`, `current_skills`,
+`target_skills[]`, `time_budget_weeks?`, `max_steps`, `include_problems?`.
+**Output prediction** (`LearningPathPrediction`): `steps[]`
+(`{step_number, skill, current_level, target_level, difficulty, estimated_hours, reason, prerequisites[]}`),
+`total_estimated_hours`, `weeks_estimate`, `prerequisites_warning?`.
+
+**Model**: `learning-path-planner-model`. Orders skills so prerequisites
+precede targets; estimates hours from current→target gap (≈12h per 0.1 skill);
+`weeks_estimate` equals `time_budget_weeks` when provided, else hours/10.
+
+### POST /ml/learning/next-milestone
+
+**Input** (`RecommendNextMilestoneRequest`): `user_id`, `current_skills`,
+`completed_milestones[]`, `candidate_skills[]`.
+**Output prediction** (`MilestonePrediction`): `next_skill`, `difficulty`,
+`estimated_hours`, `reason`, `readiness_score` (0-1).
+
+**Latency**: <10ms.
+
+---
+
+## POST /ml/reputation/compute · /ml/reputation/activity-quality (Phase 1.5)
+
+Explainable trust scoring for public profiles (reputation substitutes for a
+self-reported resume, master prompt §13 decision-support only).
+
+### POST /ml/reputation/compute
+
+**Input** (`ComputeReputationRequest`): `user_id`,
+`activity` (`ReputationActivitySummary`: snippets_pushed, problems_solved,
+problems_attempted, followers_count, profile_completeness, avg_code_quality,
+account_age_days), `verified_skills[]`.
+**Output prediction** (`ReputationPrediction`): `reputation_score` (0-100),
+`band` (`newcomer|contributor|trusted|elite`), `factors[]`
+(`{name, contribution, detail}`), `confidence`, `verification_eligible`.
+
+**Model**: `reputation-scorer-model`. Six transparent, bounded factors:
+activity volume (25), problem-solving ratio (25), code quality (20), network
+(15), profile completeness (10), verified skills (10). Every factor is
+auditable in the response.
+
+### POST /ml/reputation/activity-quality
+
+**Input** (`ComputeActivityQualityRequest`): `activity_type`,
+`code_quality_score`, `test_pass_rate`, `has_description?`, `engagement_count?`, `novelty_score?`.
+**Output prediction** (`ActivityQualityPrediction`): `quality_score` (0-100),
+`quality_band` (`low|fair|good|excellent`), `strengths[]`, `weaknesses[]`.
+
+**Latency**: <10ms.

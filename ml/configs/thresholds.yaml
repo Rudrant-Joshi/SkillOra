@@ -45,3 +45,35 @@ study_assistant:
 
 content_generation:
   requires_human_review_default: true
+
+profile_intelligence:
+  completeness_for_verified: 80
+  min_skills_for_summary: 1
+
+activity_feed:
+  recency_weight: 0.25
+  social_weight: 0.30
+  skill_relevance_weight: 0.25
+  engagement_weight: 0.20
+  per_type_cap_ratio: 0.34
+  trending_window_days: 7
+
+problem_difficulty:
+  trust_full_at_n: 30
+  pass_rate_weight: 0.7
+  easy_threshold: 0.33
+  hard_threshold: 0.66
+
+learning_path:
+  base_hours_per_01_skill: 12
+  default_target_level: 0.8
+  default_weekly_hours: 10
+  readiness_prereq_weight: 0.6
+
+reputation:
+  newcomer_max: 30
+  contributor_max: 60
+  trusted_max: 85
+  elite_min: 85
+  verification_completeness_min: 80
+  verification_min_skills: 1

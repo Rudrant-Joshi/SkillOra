@@ -13,6 +13,16 @@ from fastapi.responses import JSONResponse
 from gateway.deps import get_auth_context
 from services.adaptive_assessment.schemas import AdaptiveSelectRequest
 from services.adaptive_assessment.service import select_adaptive_question
+from services.activity_feed.schemas import (
+    DetectTrendingRequest,
+    RankFeedRequest,
+    SuggestConnectionsRequest,
+)
+from services.activity_feed.service import (
+    detect_trending_service,
+    rank_feed_service,
+    suggest_connections_service,
+)
 from services.analytics.schemas import AnalyticsQuery
 from services.analytics.service import summarize_analytics
 from services.batch.schemas import BatchRecommendRequest
@@ -32,11 +42,45 @@ from services.feedback.schemas import FeedbackLogRequest
 from services.feedback.service import log_feedback
 from services.integrity.schemas import AnalyzeIntegrityRequest
 from services.integrity.service import analyze_integrity
+from services.learning_path.schemas import (
+    GeneratePathRequest,
+    RecommendNextMilestoneRequest,
+)
+from services.learning_path.service import (
+    generate_path_service,
+    recommend_next_milestone_service,
+)
+from services.problem_difficulty.schemas import (
+    CalibrateDifficultyRequest,
+    EstimateDifficultyRequest,
+)
+from services.problem_difficulty.service import (
+    calibrate_difficulty_service,
+    estimate_difficulty,
+)
+from services.profile_intelligence.schemas import (
+    GenerateProfileSummaryRequest,
+    InferSkillsFromActivityRequest,
+    ScoreProfileCompletenessRequest,
+)
+from services.profile_intelligence.service import (
+    generate_profile_summary,
+    infer_skills_from_activity,
+    score_profile_completeness,
+)
 from services.rag.schemas import RagQueryRequest
 from services.rag.service import query_rag
 from services.rag.vector_store import InMemoryVectorStore
 from services.recommendation.schemas import RecommendQuestionRequest
 from services.recommendation.service import recommend_questions
+from services.reputation.schemas import (
+    ComputeActivityQualityRequest,
+    ComputeReputationRequest,
+)
+from services.reputation.service import (
+    compute_activity_quality_service,
+    compute_reputation_service,
+)
 from services.skill_engine.schemas import BatchSkillEstimateRequest, SkillEstimateRequest
 from services.skill_engine.service import estimate, estimate_batch
 from services.study_assistant.schemas import StudyAssistRequest
@@ -207,3 +251,76 @@ def analytics_summary(req: AnalyticsQuery, auth: AuthContext = Depends(get_auth_
 @app.post("/ml/batch/recommend")
 def batch_recommend(req: BatchRecommendRequest, auth: AuthContext = Depends(get_auth_context)):
     return batch_recommend(req)
+
+
+# ===== New in Phase 1.5 — DevConnect connective-tissue ML ======================
+
+
+# ---- Profile Intelligence ------------------------------------------------------
+
+@app.post("/ml/profile/summary")
+def profile_summary(req: GenerateProfileSummaryRequest, auth: AuthContext = Depends(get_auth_context)):
+    return generate_profile_summary(req)
+
+
+@app.post("/ml/profile/infer-skills")
+def profile_infer_skills(req: InferSkillsFromActivityRequest, auth: AuthContext = Depends(get_auth_context)):
+    return infer_skills_from_activity(req)
+
+
+@app.post("/ml/profile/completeness")
+def profile_completeness(req: ScoreProfileCompletenessRequest, auth: AuthContext = Depends(get_auth_context)):
+    return score_profile_completeness(req)
+
+
+# ---- Activity Feed ------------------------------------------------------------
+
+@app.post("/ml/feed/rank")
+def feed_rank(req: RankFeedRequest, auth: AuthContext = Depends(get_auth_context)):
+    return rank_feed_service(req)
+
+
+@app.post("/ml/feed/trending")
+def feed_trending(req: DetectTrendingRequest, auth: AuthContext = Depends(get_auth_context)):
+    return detect_trending_service(req)
+
+
+@app.post("/ml/connections/suggest")
+def connections_suggest(req: SuggestConnectionsRequest, auth: AuthContext = Depends(get_auth_context)):
+    return suggest_connections_service(req)
+
+
+# ---- Problem Difficulty (Judge) ------------------------------------------------
+
+@app.post("/ml/problem/difficulty/estimate")
+def problem_difficulty_estimate(req: EstimateDifficultyRequest, auth: AuthContext = Depends(get_auth_context)):
+    return estimate_difficulty(req)
+
+
+@app.post("/ml/problem/difficulty/calibrate")
+def problem_difficulty_calibrate(req: CalibrateDifficultyRequest, auth: AuthContext = Depends(get_auth_context)):
+    return calibrate_difficulty_service(req)
+
+
+# ---- Learning Path ------------------------------------------------------------
+
+@app.post("/ml/learning/path")
+def learning_path(req: GeneratePathRequest, auth: AuthContext = Depends(get_auth_context)):
+    return generate_path_service(req)
+
+
+@app.post("/ml/learning/next-milestone")
+def learning_next_milestone(req: RecommendNextMilestoneRequest, auth: AuthContext = Depends(get_auth_context)):
+    return recommend_next_milestone_service(req)
+
+
+# ---- Developer Reputation ------------------------------------------------------
+
+@app.post("/ml/reputation/compute")
+def reputation_compute(req: ComputeReputationRequest, auth: AuthContext = Depends(get_auth_context)):
+    return compute_reputation_service(req)
+
+
+@app.post("/ml/reputation/activity-quality")
+def reputation_activity_quality(req: ComputeActivityQualityRequest, auth: AuthContext = Depends(get_auth_context)):
+    return compute_activity_quality_service(req)

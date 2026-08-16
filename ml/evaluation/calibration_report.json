@@ -1,0 +1,50 @@
+{
+  "difficulty_default": {
+    "label": "difficulty (default weights)",
+    "n": 20,
+    "mae": 0.2667,
+    "rmse": 0.28,
+    "r2": -0.1474,
+    "mean_target": 0.5055
+  },
+  "difficulty_calibrated": {
+    "label": "difficulty (calibrated weights)",
+    "n": 20,
+    "mae": 0.0391,
+    "rmse": 0.0473,
+    "r2": 0.9672,
+    "mean_target": 0.5055
+  },
+  "reputation_default": {
+    "label": "reputation (default weights)",
+    "n": 15,
+    "mae": 8.2307,
+    "rmse": 9.9906,
+    "r2": 0.8731,
+    "mean_target": 50.8667
+  },
+  "reputation_calibrated": {
+    "label": "reputation (calibrated weights)",
+    "n": 15,
+    "mae": 2.2453,
+    "rmse": 2.9851,
+    "r2": 0.9887,
+    "mean_target": 50.8667
+  },
+  "feed_default": {
+    "label": "feed (default weights)",
+    "n": 20,
+    "mae": 0.1837,
+    "rmse": 0.2157,
+    "r2": 0.4907,
+    "mean_target": 0.6385
+  },
+  "feed_calibrated": {
+    "label": "feed (calibrated weights)",
+    "n": 20,
+    "mae": 0.0884,
+    "rmse": 0.1083,
+    "r2": 0.8715,
+    "mean_target": 0.6385
+  }
+}

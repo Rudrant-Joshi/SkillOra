@@ -25,6 +25,11 @@ permissions, and any client-supplied `user_id` / `company_id` / `role`.
 | 11 | AST Code Similarity | ✅ |
 | 12 | AI Study Assistant | ✅ |
 | 13 | Content Generation (draft) | ✅ |
+| 14 | **Profile Intelligence** (auto-summary, skill inference from activity, completeness) | ✅ **new** |
+| 15 | **Activity Feed** (personalized ranking, trending, who-to-follow) | ✅ **new** |
+| 16 | **Problem Difficulty** (heuristic + submission-calibrated) | ✅ **new** |
+| 17 | **Learning Path** (prerequisite-aware plan, next-milestone) | ✅ **new** |
+| 18 | **Developer Reputation** (explainable trust score, activity quality) | ✅ **new** |
 
 Everything from Phase 2–4 (adaptive assessment engine, candidate-job
 matching, integrity engine, content generation, feed ranking, etc.) is
@@ -68,17 +73,40 @@ ml/
 │   ├── recommendation/      question recommendation engine
 │   ├── adaptive_assessment/ adaptive question selection within blueprint
 │   ├── candidate_matching/  explainable job-candidate match scoring
-│   └── rag/                 chunking, embedding, retrieval, reranking, grounding
+│   ├── rag/                 chunking, embedding, retrieval, reranking, grounding
+│   ├── analytics/           inference-log analytics
+│   ├── batch/               batch recommendation across candidates
+│   ├── feedback/            continuous-learning feedback logging
+│   ├── integrity/           proctoring/integrity risk engine
+│   ├── code_similarity/     AST + embedding code similarity
+│   ├── study_assistant/     LLM tutor (explain / plan / flashcard)
+│   ├── content_generation/  AI question/template draft generation
+│   ├── profile_intelligence/ auto-summary, skill inference, completeness  [NEW]
+│   ├── activity_feed/        feed ranking, trending, who-to-follow        [NEW]
+│   ├── problem_difficulty/   heuristic + calibrated difficulty             [NEW]
+│   ├── learning_path/        prerequisite-aware plans, next milestone      [NEW]
+│   └── reputation/           explainable trust score, activity quality    [NEW]
 ├── models/
-│   ├── embeddings/       embedding model wrapper (pluggable backend)
-│   ├── classifiers/      (stub — Phase 3)
-│   └── skill_estimation/ skill state math (no I/O)
+│   ├── embeddings/         embedding model wrapper (pluggable backend)
+│   ├── classifiers/        (stub — Phase 3)
+│   ├── skill_estimation/   skill state math (no I/O)
+│   ├── profile_intelligence/ skill inference + completeness math        [NEW]
+│   ├── activity_feed/       feed ranking, trending, who-to-follow math  [NEW]
+│   ├── problem_difficulty/   heuristic + calibrated difficulty math      [NEW]
+│   ├── learning_path/        prerequisite-aware plan math               [NEW]
+│   └── reputation/           explainable trust-score math               [NEW]
 ├── pipelines/
 │   ├── ingestion/        RAG document ingestion pipeline
 │   ├── preprocessing/    text/code chunking utilities
-│   ├── training/         (stub — nothing to train yet in Phase 1)
-│   ├── evaluation/       offline eval harness for skill engine & RAG
+│   ├── training/         weight calibration ("training") for linear models
+│   ├── evaluation/       offline eval harness (MAE/RMSE/R²) + report writer
 │   └── inference/        (thin — services ARE the inference layer)
+├── shared/
+│   ├── calibration.py    loads/saves tuned weights (configs/calibration.json)
+├── datasets/
+│   └── seed_*.json       labeled data for calibration (difficulty/reputation/feed)
+├── evaluation/           evaluation reports land here (calibration_report.json)
+└── train.py              convenience: run calibration + evaluation
 ├── shared/
 │   ├── schemas/          Pydantic request/response contracts (§25, §30, §41)
 │   ├── config/           env-based settings, model registry config
@@ -110,6 +138,26 @@ uvicorn gateway.main:app --reload --port 8000
 ```bash
 pytest tests/ -v
 ```
+
+## Training / calibration (classical ML "training")
+
+The weighted scoring models (problem difficulty, reputation, activity-feed
+ranking) are linear-in-features and ship with sensible defaults. They are
+*calibrated* (the classical-ML equivalent of training) against labeled seed
+data in `datasets/seed_*.json` using a dependency-free least-squares solver.
+
+```bash
+python train.py                # or: python -m pipelines.training.calibrate
+```
+
+This fits new weights and writes them to `configs/calibration.json`. At runtime
+every service calls `load_calibration()` and transparently uses the tuned
+weights when present, falling back to defaults otherwise. An offline
+evaluation report (MAE / RMSE / R², before vs after) is written to
+`evaluation/calibration_report.json`.
+
+To re-label or extend training, edit the `datasets/seed_*.json` files — no code
+changes required in the models themselves.
 
 ## Model management
 

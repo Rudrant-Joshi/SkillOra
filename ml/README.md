@@ -139,6 +139,20 @@ uvicorn gateway.main:app --reload --port 8000
 pytest tests/ -v
 ```
 
+## Demo / seed data (connective tissue)
+
+`datasets/seed_profiles.py` generates a small, deterministic social graph of fake
+developers with realistic activity. `scripts/seed_demo.py` runs the entire ML
+pipeline over it — skill inference, auto-profile, personalized feed, difficulty
+estimation, learning path, and reputation — to show that *a developer's activity
+is their profile* with no manually authored fields.
+
+```bash
+python scripts/seed_demo.py
+```
+
+`tests/test_integration.py` locks this end-to-end flow in as a regression test.
+
 ## Training / calibration (classical ML "training")
 
 The weighted scoring models (problem difficulty, reputation, activity-feed

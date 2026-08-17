@@ -1,4 +1,18 @@
-node_modules
-dist
-.DS_Store
+# Node / Frontend
+node_modules/
+*/node_modules/
+dist/
+*/dist/
 *.log
+.DS_Store
+
+# Python / ML
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+*/.venv/
+venv/
+env/
+.env

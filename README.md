@@ -6,7 +6,7 @@ A unified developer platform where your coding activity — code you push, probl
 
 ## Project Structure
 
-- **Frontend Application** (`/`): React + Vite single-page application with client-side routing (`react-router-dom`), Monaco editor integration, high-intensity cyber neon motion design system, Framer Motion animations, and persistent state.
+- **Frontend Application** ([`frontend/`](frontend/)): React + Vite single-page application with client-side routing (`react-router-dom`), Monaco editor integration, high-intensity cyber neon motion design system, Framer Motion animations, and persistent state.
 - **ML / AI Intelligence Layer** ([`ml/`](ml/)): Owns models, pipelines, inference, RAG, evaluation, recommendations, the skill engine, feed ranking, difficulty estimation, learning paths, and reputation scoring.
 
 ---
@@ -14,6 +14,7 @@ A unified developer platform where your coding activity — code you push, probl
 ## Frontend Quick Start (React + Vite)
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
@@ -22,6 +23,7 @@ Then open the printed local URL (typically `http://localhost:5173`).
 
 Build for production:
 ```bash
+cd frontend
 npm run build
 ```
 

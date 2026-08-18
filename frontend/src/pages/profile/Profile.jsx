@@ -1,13 +1,10 @@
 import { PageHeader, Card } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem, Reveal } from '../../components/animations/Reveal';
 import { AnimatedNumber } from '../../components/ui/AnimatedNumber';
-import Spotlight from '../../components/motion/Spotlight';
-import TiltCard from '../../components/motion/TiltCard';
 import { useDemoState } from '../../context/DemoStateContext';
 import { problemsData, badgeDefs } from '../../data/code';
 import { roleName, roleTitle, roleInitials } from '../../data/roles';
 import { useAuth } from '../../context/AuthContext';
-import { springs } from '../../lib/motionConfig';
 
 export default function Profile() {
   const { snippets, solved, followingCount, network } = useDemoState();
@@ -56,33 +53,25 @@ export default function Profile() {
       <div className="divider" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Reveal>
-          <TiltCard tiltMax={3}>
-            <Spotlight>
-              <div className="card-flat">
-                <div className="eyebrow">Problems By Difficulty</div>
-                <div className="flex flex-col gap-2 mt-3">
-                  {Object.entries(byDiff).map(([k, v]) => (
-                    <div key={k} className="flex justify-between text-xs">
-                      <span>{k}</span>
-                      <span className="text-green">{v}</span>
-                    </div>
-                  ))}
+          <div className="card-flat">
+            <div className="eyebrow">Problems By Difficulty</div>
+            <div className="flex flex-col gap-2 mt-3">
+              {Object.entries(byDiff).map(([k, v]) => (
+                <div key={k} className="flex justify-between text-xs">
+                  <span>{k}</span>
+                  <span className="text-green">{v}</span>
                 </div>
-              </div>
-            </Spotlight>
-          </TiltCard>
+              ))}
+            </div>
+          </div>
         </Reveal>
         <Reveal delay={0.05}>
-          <TiltCard tiltMax={3}>
-            <Spotlight>
-              <div className="card-flat">
-                <div className="eyebrow">Languages</div>
-                <div className="flex gap-1.5 flex-wrap mt-3">
-                  {langs.length ? langs.map((l) => <span key={l} className="tech-pill">{l}</span>) : <span className="dim text-xs text-textDim">No snippets yet</span>}
-                </div>
-              </div>
-            </Spotlight>
-          </TiltCard>
+          <div className="card-flat">
+            <div className="eyebrow">Languages</div>
+            <div className="flex gap-1.5 flex-wrap mt-3">
+              {langs.length ? langs.map((l) => <span key={l} className="tech-pill">{l}</span>) : <span className="dim text-xs text-textDim">No snippets yet</span>}
+            </div>
+          </div>
         </Reveal>
       </div>
 
@@ -93,11 +82,11 @@ export default function Profile() {
           const earned = earnedBadges.includes(b);
           return (
             <StaggerItem key={b.id}>
-              <Card className={earned ? '' : 'opacity-40'}>
+              <div className={`card text-center ${earned ? '' : 'opacity-40'}`}>
                 <div className={`text-lg ${earned ? 'text-green' : 'text-textMute'}`}>{earned ? '✓' : '○'}</div>
                 <div className="h-display text-[11px] mt-2 leading-tight">{b.name}</div>
                 <div className="text-textDim text-[10px] mt-1.5">{b.desc}</div>
-              </Card>
+              </div>
             </StaggerItem>
           );
         })}
@@ -108,10 +97,10 @@ export default function Profile() {
       <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {publicSnippets.length ? publicSnippets.map((s) => (
           <StaggerItem key={s.id}>
-            <Card>
+            <div className="card">
               <div className="h-display text-sm">{s.title}</div>
               <div className="tech-pill inline-block mt-2">{s.lang}</div>
-            </Card>
+            </div>
           </StaggerItem>
         )) : <div className="dim text-xs text-textDim">No public snippets yet.</div>}
       </StaggerContainer>

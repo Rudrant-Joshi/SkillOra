@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { PageHeader } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { ProgressBar } from '../../components/ui/AnimatedNumber';
 import { gaps } from '../../data/skills';
-import { springs } from '../../lib/motionConfig';
 
 const ROLES = ['Backend Developer', 'Full Stack Developer', 'AI/ML Engineer', 'DevOps Engineer'];
 
@@ -26,11 +24,7 @@ export default function Gaps() {
       <StaggerContainer className="flex flex-col gap-2.5">
         {gaps.map((g) => (
           <StaggerItem key={g.name}>
-            <motion.div
-              className="skill-row cursor-default"
-              whileHover={{ x: 2 }}
-              transition={springs.snappy}
-            >
+            <div className="skill-row cursor-default">
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
                   <span className="skill-name">{g.name}</span>
@@ -41,7 +35,7 @@ export default function Gaps() {
                 </div>
               </div>
               <span className={`badge ${g.cls}`}>{g.priority}</span>
-            </motion.div>
+            </div>
           </StaggerItem>
         ))}
       </StaggerContainer>

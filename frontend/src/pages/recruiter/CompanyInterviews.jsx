@@ -1,4 +1,4 @@
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import DataTable from '../../components/ui/DataTable';
 import { interviewsData } from '../../data/recruiter';
 
@@ -7,7 +7,7 @@ const STATUS_TONE = { Scheduled: 'strong', Upcoming: 'warn', Completed: '' };
 export default function CompanyInterviews() {
   return (
     <div>
-      <PageHeader title="Interviews" subtitle="Upcoming and completed candidate interviews." actions={<button className="btn-primary">+ SCHEDULE INTERVIEW</button>} />
+      <PageHeader title="Interviews" subtitle="Upcoming and completed candidate interviews." actions={<Button tone="primary">+ SCHEDULE INTERVIEW</Button>} />
       <DataTable
         columns={['Candidate', 'Position', 'Type', 'Date', 'Time', 'Interviewer', 'Status']}
         rows={interviewsData}

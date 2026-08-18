@@ -1,4 +1,4 @@
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import DataTable from '../../components/ui/DataTable';
 import { questionBankData } from '../../data/recruiter';
 
@@ -7,7 +7,7 @@ const DIFF_TONE = { Easy: 'strong', Medium: 'warn', Hard: 'gap' };
 export default function CompanyQuestions() {
   return (
     <div>
-      <PageHeader title="Question Bank" subtitle="Reusable questions for building assessments." actions={<button className="btn-primary">+ ADD QUESTION</button>} />
+      <PageHeader title="Question Bank" subtitle="Reusable questions for building assessments." actions={<Button tone="primary">+ ADD QUESTION</Button>} />
       <DataTable
         columns={['Question', 'Type', 'Topic', 'Skill', 'Difficulty']}
         rows={questionBankData}

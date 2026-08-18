@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Card, Button } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
-import Spotlight from '../../components/motion/Spotlight';
-import TiltCard from '../../components/motion/TiltCard';
 import { useDemoState } from '../../context/DemoStateContext';
-import { springs } from '../../lib/motionConfig';
 
 export default function Network() {
   const { network, toggleFollow } = useDemoState();
@@ -25,37 +21,30 @@ export default function Network() {
       <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {filtered.map((n) => (
           <StaggerItem key={n.name}>
-            <TiltCard tiltMax={3}>
-              <Spotlight>
-                <motion.div
-                  className="card"
-                  whileTap={{ scale: 0.985 }}
-                  transition={springs.snappy}
+            <Card hover className="flex flex-col justify-between h-full">
+              <div>
+                <div className="h-display text-sm text-white">{n.name}</div>
+                <div className="dim text-[11px] mt-1 text-textDim">{n.role}</div>
+                <div className="flex gap-1.5 flex-wrap mt-2.5">
+                  {n.skills.map((s) => (
+                    <span key={s} className="tech-pill">{s}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="badge strong">{n.conf}% CONF</span>
+                  <span className="text-textDim text-[10px]">{n.verified} verified</span>
+                </div>
+                <Button
+                  tone="small"
+                  className={`w-full justify-center ${n.following ? 'active' : ''}`}
+                  onClick={() => toggleFollow(n.name)}
                 >
-                  <div className="h-display text-sm">{n.name}</div>
-                  <div className="dim text-[11px] mt-1 text-textDim">{n.role}</div>
-                  <div className="flex gap-1.5 flex-wrap mt-2.5">
-                    {n.skills.map((s) => (
-                      <span key={s} className="tech-pill">{s}</span>
-                    ))}
-                  </div>
-                  <div className="flex justify-between items-center mt-3.5">
-                    <span className="badge strong">{n.conf}% CONF</span>
-                    <span className="text-textDim text-[10px]">{n.verified} verified</span>
-                  </div>
-                  <motion.button
-                    className={`btn-small w-full justify-center mt-3.5 ${n.following ? 'active' : ''}`}
-                    onClick={() => toggleFollow(n.name)}
-                    whileHover={{ y: -1 }}
-                    whileTap={{ scale: 0.96 }}
-                    transition={springs.snappy}
-                    layout
-                  >
-                    {n.following ? 'FOLLOWING' : 'FOLLOW'}
-                  </motion.button>
-                </motion.div>
-              </Spotlight>
-            </TiltCard>
+                  {n.following ? '✓ FOLLOWING' : '+ FOLLOW'}
+                </Button>
+              </div>
+            </Card>
           </StaggerItem>
         ))}
       </StaggerContainer>

@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import Magnetic from '../../components/motion/Magnetic';
 import { springs, ease } from '../../lib/motionConfig';
+import Magnetic from '../../components/motion/Magnetic';
 
 const ROLES = [
   { id: 'developer', label: 'Candidate' },
@@ -51,9 +51,9 @@ export default function Login() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.97, filter: 'blur(8px)' }}
-      animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-      transition={{ ...springs.smooth, opacity: { duration: 0.5 }, filter: { duration: 0.5 } }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
       className="w-[420px] max-w-full offset-panel"
     >
       <div className="inner px-8 sm:px-10 pt-11 pb-9">
@@ -91,36 +91,24 @@ export default function Login() {
         </motion.div>
 
         <form onSubmit={handleSubmit}>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.35 }}
-          >
-            <div className="field-label">Email</div>
-            <input
-              className="field-input"
-              type="email"
-              placeholder="you@company.com"
-              style={{ background: '#fff', color: '#000' }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.35 }}
-          >
-            <div className="field-label">Password</div>
-            <input
-              className="field-input"
-              type="password"
-              placeholder="••••••••"
-              style={{ background: '#fff', color: '#000' }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </motion.div>
+          <div className="field-label">Email</div>
+          <input
+            className="field-input"
+            type="email"
+            placeholder="you@company.com"
+            style={{ background: '#fff', color: '#000' }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="field-label">Password</div>
+          <input
+            className="field-input"
+            type="password"
+            placeholder="••••••••"
+            style={{ background: '#fff', color: '#000' }}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}

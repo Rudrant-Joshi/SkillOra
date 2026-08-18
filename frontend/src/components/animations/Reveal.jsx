@@ -1,53 +1,60 @@
 import { motion } from 'framer-motion';
-import { ease, duration, prefersReducedMotion } from '../../lib/motionConfig';
+import { ease, directionOffset } from '../../lib/motion';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
- * High-performance, GPU-only scroll reveal (opacity & transform).
- * No heavy CSS filters or blur animations that trigger layout repaints.
+ * Reveal — scroll/mount entrance primitive.
+ * Supports multiple rich elemental variants: pop, scale, slideLeft, slideRight, soft.
  */
 export function Reveal({
   children,
   delay = 0,
-  y,
-  x,
+  duration = 0.45,
+  distance = 20,
   direction = 'up',
-  mode = 'default',
+  variant = 'pop', // pop | scale | slideLeft | slideRight | soft | none
+  scale,
+  once = true,
+  amount = 0.08,
+  margin = '0px 0px -40px 0px',
+  easing = ease.out,
   className = '',
+  style = {},
   as: Comp = motion.div,
   ...rest
 }) {
-  if (prefersReducedMotion()) {
-    const Tag = Comp === motion.div ? 'div' : Comp;
-    return <Tag className={className} {...rest}>{children}</Tag>;
-  }
+  const reduced = useReducedMotion();
 
-  let initial, target;
+  const isPop = variant === 'pop';
+  const resolvedScale = scale ?? (isPop ? 0.92 : variant === 'scale' ? 0.96 : undefined);
+  const resolvedDir = variant === 'slideLeft' ? 'left' : variant === 'slideRight' ? 'right' : direction;
+  const offset = reduced ? {} : directionOffset(resolvedDir, distance);
 
-  if (mode === 'scale') {
-    initial = { opacity: 0, scale: 0.97 };
-    target = { opacity: 1, scale: 1 };
-  } else if (mode === 'clipPath') {
-    initial = { opacity: 0, clipPath: 'inset(100% 0% 0% 0%)' };
-    target = { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)' };
-  } else {
-    const dist = 16;
-    const translate =
-      direction === 'down'  ? { y: y ?? -dist } :
-      direction === 'left'  ? { x: x ?? dist } :
-      direction === 'right' ? { x: x ?? -dist } :
-                              { y: y ?? dist };
+  const initial = {
+    opacity: 0,
+    ...offset,
+    ...(resolvedScale !== undefined ? { scale: resolvedScale } : {}),
+  };
 
-    initial = { opacity: 0, ...translate };
-    target = { opacity: 1, y: 0, x: 0 };
-  }
+  const animateTo = {
+    opacity: 1,
+    y: 0,
+    x: 0,
+    ...(resolvedScale !== undefined ? { scale: 1 } : {}),
+  };
+
+  const transition = isPop && !reduced
+    ? { type: 'spring', stiffness: 320, damping: 24, delay }
+    : { duration: reduced ? 0.15 : duration, delay: reduced ? 0 : delay, ease: easing };
 
   return (
     <Comp
-      initial={initial}
-      whileInView={target}
-      viewport={{ once: true, margin: '-20px' }}
-      transition={{ duration: 0.25, delay, ease: ease.out }}
+      initial={reduced ? { opacity: 0 } : initial}
+      whileInView={reduced ? { opacity: 1 } : animateTo}
+      viewport={{ once, margin, amount }}
+      transition={transition}
       className={className}
+      style={{ willChange: 'transform, opacity', ...style }}
       {...rest}
     >
       {children}
@@ -55,46 +62,109 @@ export function Reveal({
   );
 }
 
-export function StaggerContainer({ children, className = '', stagger: staggerVal = 0.04 }) {
+/** LaserDivider — animated horizontal rule that sweeps open on scroll into view. */
+export function LaserDivider({ className = '' }) {
+  const reduced = useReducedMotion();
+  return (
+    <div className={`relative my-6 overflow-hidden ${className}`}>
+      <motion.div
+        initial={reduced ? { scaleX: 1 } : { scaleX: 0, opacity: 0 }}
+        whileInView={{ scaleX: 1, opacity: 1 }}
+        viewport={{ once: true, margin: '0px 0px -30px 0px' }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        className="h-[1px] bg-gradient-to-r from-transparent via-green/70 to-transparent origin-center w-full"
+      />
+    </div>
+  );
+}
+
+/** Stagger container — wrap a list of <StaggerItem /> to cascade their pop-up entrance. */
+export function StaggerContainer({ children, className = '', stagger = 0.06, once = true, margin = '0px 0px -40px 0px', delayChildren = 0.04, ...rest }) {
+  const reduced = useReducedMotion();
   return (
     <motion.div
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: '-20px' }}
+      viewport={{ once, margin, amount: 0.05 }}
       variants={{
         hidden: {},
         show: {
           transition: {
-            staggerChildren: staggerVal,
+            staggerChildren: reduced ? 0 : stagger,
+            delayChildren: reduced ? 0 : delayChildren,
           },
         },
       }}
       className={className}
+      {...rest}
     >
       {children}
     </motion.div>
   );
 }
 
-export function StaggerItem({ children, className = '', direction = 'up' }) {
-  if (prefersReducedMotion()) {
-    return <div className={className}>{children}</div>;
-  }
+/** StaggerItem — spring pop-up element inside StaggerContainer. */
+export function StaggerItem({
+  children,
+  className = '',
+  direction = 'up',
+  distance = 16,
+  scale = 0.94,
+  style = {},
+  as: Comp = motion.div,
+  ...rest
+}) {
+  const reduced = useReducedMotion();
+  const offset = directionOffset(direction, distance);
+  return (
+    <Comp
+      variants={{
+        hidden: reduced
+          ? { opacity: 0 }
+          : { opacity: 0, ...offset, scale },
+        show: {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          scale: 1,
+          transition: reduced
+            ? { duration: 0.15 }
+            : { type: 'spring', stiffness: 360, damping: 25 },
+        },
+      }}
+      className={className}
+      style={{ willChange: 'transform, opacity', ...style }}
+      {...rest}
+    >
+      {children}
+    </Comp>
+  );
+}
 
-  const dist = 12;
-  const translate =
-    direction === 'left'  ? { x: dist, y: 0 } :
-    direction === 'right' ? { x: -dist, y: 0 } :
-    direction === 'down'  ? { y: -dist } :
-                            { y: dist };
+/** SequencedGroup — assembles page headers with progressive stagger. */
+export function SequencedGroup({ children, gap = 0.06 }) {
+  return (
+    <motion.div initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: gap } } }}>
+      {children}
+    </motion.div>
+  );
+}
 
+export function SequencedItem({ children, direction = 'up', distance = 10, className = '' }) {
+  const reduced = useReducedMotion();
+  const offset = directionOffset(direction, distance);
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, ...translate },
-        show:   { opacity: 1, y: 0, x: 0 },
+        hidden: reduced ? { opacity: 0 } : { opacity: 0, ...offset, scale: 0.98 },
+        show: {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          scale: 1,
+          transition: { duration: reduced ? 0.15 : 0.42, ease: [0.16, 1, 0.3, 1] },
+        },
       }}
-      transition={{ duration: 0.2, ease: ease.out }}
       className={className}
     >
       {children}

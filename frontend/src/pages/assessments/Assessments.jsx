@@ -6,6 +6,7 @@ import { StaggerContainer, StaggerItem } from '../../components/animations/Revea
 import Spotlight from '../../components/motion/Spotlight';
 import TiltCard from '../../components/motion/TiltCard';
 import Magnetic from '../../components/motion/Magnetic';
+import { springs } from '../../lib/motionConfig';
 import { api } from '../../lib/api';
 
 const STATUS_TONE = { 'NOT STARTED': '', IN_PROGRESS: 'strong', COMPLETED: 'strong', EXPIRED: 'gap' };

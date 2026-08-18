@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import CodeEditor from '../../components/editors/CodeEditor';
 import { useDemoState } from '../../context/DemoStateContext';
 import { useToast } from '../../context/ToastContext';
@@ -87,13 +87,14 @@ export default function SnippetForm() {
           <div className="mono dim text-[10px] mt-2.5 leading-relaxed text-textDim">
             {isPublic ? 'Public snippets appear on your profile and in the activity feed.' : 'Private snippets are only visible to you.'}
           </div>
-          <div className="divider-dim" />
-          <button className="btn-primary w-full justify-center" onClick={handleSave} type="button">
-            SAVE SNIPPET
-          </button>
-          <button className="btn-secondary w-full justify-center mt-2.5" onClick={handleCancel} type="button">
-            CANCEL
-          </button>
+          <div className="flex flex-col gap-2.5">
+            <Button tone="primary" className="w-full justify-center" onClick={handleSave} type="button">
+              SAVE SNIPPET
+            </Button>
+            <Button tone="secondary" className="w-full justify-center" onClick={handleCancel} type="button">
+              CANCEL
+            </Button>
+          </div>
         </div>
       </div>
     </div>

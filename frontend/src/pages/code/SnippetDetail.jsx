@@ -1,5 +1,5 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { PageHeader, EmptyState } from '../../components/ui/Primitives';
+import { useNavigate, useParams } from 'react-router-dom';
+import { PageHeader, Button, EmptyState } from '../../components/ui/Primitives';
 import CodeEditor from '../../components/editors/CodeEditor';
 import { useDemoState } from '../../context/DemoStateContext';
 import { useConfirm } from '../../context/ConfirmContext';
@@ -36,14 +36,14 @@ export default function SnippetDetail() {
         title={snippet.title}
         subtitle={snippet.desc}
         actions={
-          <>
-            <Link to={`/app/code/snippets/${snippet.id}/edit`} className="btn-secondary">
+          <div className="flex gap-2.5">
+            <Button to={`/app/code/snippets/${snippet.id}/edit`} tone="secondary">
               EDIT
-            </Link>
-            <button className="btn-secondary" onClick={handleDelete}>
+            </Button>
+            <Button tone="secondary" onClick={handleDelete}>
               DELETE
-            </button>
-          </>
+            </Button>
+          </div>
         }
       />
       <div className="flex gap-1.5 mb-4">

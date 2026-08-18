@@ -50,7 +50,7 @@ export default function ExamResult() {
     );
   }
 
-  const score = result?.overall_score ?? result?.overall_score ?? 0;
+  const score = result?.overall_score ?? 0;
   const rawScore = result?.raw_score ?? 0;
   const mlScore = result?.ml_score ?? 0;
   const questionCount = result?.questions_count ?? 0;

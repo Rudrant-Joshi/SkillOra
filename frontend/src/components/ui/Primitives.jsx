@@ -1,110 +1,140 @@
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from './AnimatedNumber';
-import { Reveal } from '../animations/Reveal';
-import TiltCard from '../motion/TiltCard';
-import AnimatedText from '../motion/AnimatedText';
-import { springs } from '../../lib/motionConfig';
+import { Reveal, SequencedGroup, SequencedItem } from '../animations/Reveal';
+import { PointerGlow } from '../animations/PointerGlow';
+import { TiltCard } from '../animations/TiltCard';
+import { Magnetic } from '../animations/Magnetic';
+import { ease, press, cardHover, cardHoverFeatured } from '../../lib/motion';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
-export function Card({ children, className = '', hover = true, tilt = true, ...rest }) {
-  const cardContent = (
+/**
+ * Card — the base interactive surface used throughout the app.
+ * `featured` opts a card into the premium pointer-glow + 3D tilt treatment;
+ * reserve that for hero/flagship surfaces, not every card.
+ *
+ * Hover is intentionally heavy: a real lift, a scale bump, and a glowing
+ * shadow, driven by spring physics so it feels tactile rather than a fade.
+ * Clicking a card fires a quick vibration so the click is unmistakable.
+ */
+export function Card({ children, className = '', hover = true, featured = false, glow = false, onClick, ...rest }) {
+  const reduced = useReducedMotion();
+  const content = (
     <motion.div
-      className={`card ${className}`}
-      whileTap={hover ? { scale: 0.985 } : undefined}
-      transition={springs.snappy}
+      className={`card ${featured ? 'card-featured' : ''} ${className}`}
+      whileHover={hover && !reduced ? (featured ? cardHoverFeatured : cardHover) : undefined}
+      whileTap={!reduced ? { scale: 0.97 } : undefined}
+      onClick={onClick}
+      transition={{ duration: 0.18, ease: ease.out }}
+      style={{ willChange: hover ? 'transform' : undefined }}
       {...rest}
     >
       {children}
     </motion.div>
   );
 
-  if (tilt && hover) {
+  if (featured && !reduced) {
     return (
-      <TiltCard tiltMax={3.5}>
-        {cardContent}
+      <TiltCard maxTilt={2.5}>
+        <PointerGlow>{content}</PointerGlow>
       </TiltCard>
     );
   }
+  if (glow && !reduced) {
+    return <PointerGlow>{content}</PointerGlow>;
+  }
+  return content;
+}
 
-  return cardContent;
+import { Link } from 'react-router-dom';
+
+/** Motion-aware button — heavy press/hover feedback + magnetic pull (as on Passport page). */
+export function Button({
+  children,
+  tone = 'primary',
+  magnetic = true,
+  className = '',
+  as: Comp,
+  to,
+  disabled = false,
+  ...rest
+}) {
+  const Component = Comp || (to ? Link : 'button');
+  const toneClass = tone === 'primary' ? 'btn-primary' : tone === 'secondary' ? 'btn-secondary' : 'btn-small';
+  const el = (
+    <motion.div
+      whileHover={disabled ? undefined : { scale: 1.05, y: -3 }}
+      whileTap={disabled ? undefined : { scale: 0.94 }}
+      transition={{ type: 'spring', stiffness: 420, damping: 22 }}
+      className={`inline-block ${className.includes('w-full') ? 'w-full' : ''}`}
+    >
+      <Component to={to} disabled={disabled} className={`${toneClass} ${className}`} {...rest}>
+        {children}
+      </Component>
+    </motion.div>
+  );
+  return magnetic && !disabled ? <Magnetic className={`inline-block ${className.includes('w-full') ? 'w-full' : ''}`}>{el}</Magnetic> : el;
 }
 
 export function StatCard({ label, value, suffix = '', tone = '', delay = 0 }) {
   return (
-    <Reveal delay={delay} mode="scale">
-      <TiltCard tiltMax={4}>
-        <motion.div
-          className="card"
-          whileTap={{ scale: 0.985 }}
-          transition={springs.snappy}
-        >
-          <div className="eyebrow">{label}</div>
-          <div className={`big-num text-3xl ${tone}`}>
-            <AnimatedNumber value={value} suffix={suffix} />
-          </div>
-        </motion.div>
-      </TiltCard>
+    <Reveal delay={delay} variant="pop">
+      <Card hover featured={false} className="relative overflow-hidden group">
+        <div className="eyebrow">{label}</div>
+        <div className={`big-num text-3xl md:text-4xl ${tone} mt-1`}>
+          <AnimatedNumber value={value} suffix={suffix} />
+        </div>
+        {/* Subtle hover laser accent */}
+        <div className="absolute top-0 right-0 w-16 h-16 bg-green/5 rounded-full blur-xl pointer-events-none group-hover:bg-green/15 transition-all duration-300" />
+      </Card>
     </Reveal>
   );
 }
 
 export function Badge({ children, tone = '' }) {
-  return <span className={`badge ${tone}`}>{children}</span>;
+  return (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.75 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 480, damping: 22 }}
+      className={`badge ${tone}`}
+    >
+      {children}
+    </motion.span>
+  );
 }
 
+export { LaserDivider } from '../animations/Reveal';
+
+/** Page header — label / title / subtitle / actions assemble in sequence. */
 export function PageHeader({ title, subtitle, actions }) {
   return (
-    <Reveal>
-      <div className="flex justify-between items-start flex-wrap gap-4">
+    <SequencedGroup gap={0.07}>
+      <div className="flex justify-between items-start flex-wrap gap-4 mb-7">
         <div>
-          <AnimatedText
-            text={title}
-            mode="words"
-            className="h-display text-2xl md:text-[26px]"
-            stagger={0.05}
-          />
+          <SequencedItem direction="up" distance={10}>
+            <div className="h-display text-2xl md:text-[28px] tracking-tight">{title}</div>
+          </SequencedItem>
           {subtitle && (
-            <motion.div
-              className="dim text-xs mt-1.5 text-textDim"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-            >
-              {subtitle}
-            </motion.div>
+            <SequencedItem direction="up" distance={8}>
+              <div className="dim text-xs mt-1.5 text-textDim tracking-wide">{subtitle}</div>
+            </SequencedItem>
           )}
         </div>
         {actions && (
-          <motion.div
-            className="flex gap-2.5 flex-wrap"
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.35 }}
-          >
-            {actions}
-          </motion.div>
+          <SequencedItem direction="up" distance={6}>
+            <div className="flex gap-2.5 flex-wrap">{actions}</div>
+          </SequencedItem>
         )}
       </div>
       <div className="divider" />
-    </Reveal>
+    </SequencedGroup>
   );
 }
 
 export function EmptyState({ children }) {
   return (
-    <motion.div
-      className="card-flat text-center py-8"
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4 }}
-    >
-      <motion.div
-        className="dim mono text-xs text-textDim"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        {children}
-      </motion.div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="card-flat text-center py-8">
+      <div className="dim mono text-xs text-textDim">{children}</div>
     </motion.div>
   );
 }

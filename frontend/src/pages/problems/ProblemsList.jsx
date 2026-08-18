@@ -1,13 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { PageHeader } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
-import Spotlight from '../../components/motion/Spotlight';
-import TiltCard from '../../components/motion/TiltCard';
 import { problemsData } from '../../data/code';
 import { useDemoState } from '../../context/DemoStateContext';
-import { springs } from '../../lib/motionConfig';
 
 const DIFFS = ['all', 'Easy', 'Medium', 'Hard'];
 const SOLVED_FILTERS = ['all', 'solved', 'unsolved'];
@@ -62,30 +58,22 @@ export default function ProblemsList() {
         <span className="mono dim text-[10px] ml-auto text-textDim">{filtered.length} PROBLEMS</span>
       </div>
 
-      <StaggerContainer className="flex flex-col gap-2">
+      <StaggerContainer className="flex flex-col gap-2.5">
         {filtered.map((p) => {
           const isSolved = solved.includes(p.id);
           return (
             <StaggerItem key={p.id}>
-              <Link to={`/app/problems/${p.id}`}>
-                <TiltCard tiltMax={2}>
-                  <Spotlight>
-                    <motion.div
-                      className="problem-row"
-                      whileHover={{ x: 3 }}
-                      transition={springs.snappy}
-                    >
-                      <span className={`status-dot`} style={{ background: isSolved ? 'var(--green)' : '#4A4A4A' }} />
-                      <span className="flex-1 text-[13px]">{p.title}</span>
-                      <div className="flex gap-1.5 flex-wrap">
-                        {p.tags.map((t) => (
-                          <span key={t} className="tech-pill">{t}</span>
-                        ))}
-                      </div>
-                      <span className={`badge ${p.diff === 'Easy' ? 'strong' : p.diff === 'Medium' ? 'warn' : 'gap'}`}>{p.diff.toUpperCase()}</span>
-                    </motion.div>
-                  </Spotlight>
-                </TiltCard>
+              <Link to={`/app/problems/${p.id}`} className="block">
+                <div className="problem-row group hover:border-white/30 transition-all">
+                  <span className={`status-dot`} style={{ background: isSolved ? 'var(--green)' : '#4A4A4A', boxShadow: isSolved ? '0 0 8px #39ff14' : 'none' }} />
+                  <span className="flex-1 text-[13px] font-medium text-white group-hover:text-green transition-colors">{p.title}</span>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {p.tags.map((t) => (
+                      <span key={t} className="tech-pill">{t}</span>
+                    ))}
+                  </div>
+                  <span className={`badge ${p.diff === 'Easy' ? 'strong' : p.diff === 'Medium' ? 'warn' : 'gap'}`}>{p.diff.toUpperCase()}</span>
+                </div>
               </Link>
             </StaggerItem>
           );

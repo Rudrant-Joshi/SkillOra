@@ -58,15 +58,15 @@ export default function ProblemsList() {
         <span className="mono dim text-[10px] ml-auto text-textDim">{filtered.length} PROBLEMS</span>
       </div>
 
-      <StaggerContainer className="flex flex-col gap-2">
+      <StaggerContainer className="flex flex-col gap-2.5">
         {filtered.map((p) => {
           const isSolved = solved.includes(p.id);
           return (
             <StaggerItem key={p.id}>
               <Link to={`/app/problems/${p.id}`} className="block">
-                <div className="problem-row">
+                <div className="problem-row group hover:border-white/30 transition-all">
                   <span className={`status-dot`} style={{ background: isSolved ? 'var(--green)' : '#4A4A4A', boxShadow: isSolved ? '0 0 8px #39ff14' : 'none' }} />
-                  <span className="flex-1 text-[13px] font-medium">{p.title}</span>
+                  <span className="flex-1 text-[13px] font-medium text-white group-hover:text-green transition-colors">{p.title}</span>
                   <div className="flex gap-1.5 flex-wrap">
                     {p.tags.map((t) => (
                       <span key={t} className="tech-pill">{t}</span>

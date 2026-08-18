@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { useDemoState } from '../../context/DemoStateContext';
 
@@ -12,9 +12,9 @@ export default function CodeList() {
         title="Code / Snippets"
         subtitle="Your hosted code. Public snippets feed your profile and activity feed."
         actions={
-          <Link to="/app/code/snippets/new" className="btn-primary">
+          <Button to="/app/code/snippets/new" tone="primary">
             + CREATE SNIPPET
-          </Link>
+          </Button>
         }
       />
       <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

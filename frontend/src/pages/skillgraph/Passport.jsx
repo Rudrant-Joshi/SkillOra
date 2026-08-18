@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Reveal, StaggerContainer, StaggerItem, SequencedGroup, SequencedItem } from '../../components/animations/Reveal';
+import { motion } from 'framer-motion';
+import { Reveal, StaggerContainer, StaggerItem, SequencedGroup, SequencedItem, LaserDivider } from '../../components/animations/Reveal';
 import { TiltCard } from '../../components/animations/TiltCard';
 import { PointerGlow } from '../../components/animations/PointerGlow';
 import { Button } from '../../components/ui/Primitives';
@@ -44,7 +44,7 @@ export default function Passport() {
         <SequencedItem distance={6}>
           <div className="dim text-xs mt-1.5 text-textDim">Your cryptographically verifiable evidence-backed developer profile.</div>
         </SequencedItem>
-        <div className="divider" />
+        <LaserDivider />
       </SequencedGroup>
 
       <Reveal delay={0.05} variant="scale">
@@ -70,7 +70,7 @@ export default function Passport() {
                 </div>
               </div>
 
-              <div className="divider" />
+              <LaserDivider />
               <div className="flex justify-between items-center flex-wrap gap-2">
                 <div className="eyebrow text-white/90">Skill Confidence Breakdown</div>
                 <div className="flex items-center gap-3 text-[10px] font-mono">
@@ -109,7 +109,7 @@ export default function Passport() {
                 })}
               </StaggerContainer>
 
-              <div className="divider" />
+              <LaserDivider />
               <div className="eyebrow text-white/90">Verified Improvements</div>
               <StaggerContainer className="flex flex-wrap gap-2.5 mt-2" stagger={0.06}>
                 {['Testing (+39%)', 'Docker (+55%)', 'API Security (+23%)', 'CI/CD Pipeline (+40%)'].map((item) => (
@@ -121,7 +121,7 @@ export default function Passport() {
                 ))}
               </StaggerContainer>
 
-              <div className="divider" />
+              <LaserDivider />
               <div className="eyebrow text-white/90">Verified Assessment Badges</div>
               <StaggerContainer className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3" stagger={0.05}>
                 {badgesForPassport.map((b) => (
@@ -148,7 +148,7 @@ export default function Passport() {
                 ))}
               </StaggerContainer>
 
-              <div className="divider" />
+              <LaserDivider />
               <StaggerContainer className="flex gap-3 flex-wrap items-center" stagger={0.05}>
                 <StaggerItem>
                   <Button tone="primary" magnetic>SHARE PASSPORT</Button>

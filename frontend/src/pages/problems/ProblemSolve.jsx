@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { PageHeader, EmptyState } from '../../components/ui/Primitives';
+import { PageHeader, Button, EmptyState } from '../../components/ui/Primitives';
 import CodeEditor from '../../components/editors/CodeEditor';
 import { ExecutionResult, useExecution } from '../../components/editors/ExecutionPanel';
 import { problemsData } from '../../data/code';
@@ -84,12 +84,12 @@ export default function ProblemSolve() {
           </div>
           <CodeEditor value={code} onChange={setCode} language={lang} originalValue={problem.starter} height={300} />
           <div className="flex gap-2.5 mt-3">
-            <button className="btn-secondary flex-1 justify-center" onClick={handleRun} disabled={exec.running}>
+            <Button tone="secondary" className="w-full justify-center" onClick={handleRun} disabled={exec.running}>
               RUN
-            </button>
-            <button className="btn-primary flex-1 justify-center" onClick={handleSubmit} disabled={exec.running}>
+            </Button>
+            <Button tone="primary" className="w-full justify-center" onClick={handleSubmit} disabled={exec.running}>
               SUBMIT
-            </button>
+            </Button>
           </div>
           <div className="card-flat mt-4">
             <ExecutionResult result={exec.result} status={exec.status} text={exec.text} mode="submit" />

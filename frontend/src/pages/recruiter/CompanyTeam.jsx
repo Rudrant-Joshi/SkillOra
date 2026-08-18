@@ -1,11 +1,11 @@
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import DataTable from '../../components/ui/DataTable';
 import { teamData } from '../../data/recruiter';
 
 export default function CompanyTeam() {
   return (
     <div>
-      <PageHeader title="Team" subtitle="Manage recruiter and admin access." actions={<button className="btn-primary">+ INVITE MEMBER</button>} />
+      <PageHeader title="Team" subtitle="Manage recruiter and admin access." actions={<Button tone="primary">+ INVITE MEMBER</Button>} />
       <DataTable
         columns={['Name', 'Role', 'Email', '']}
         rows={teamData}

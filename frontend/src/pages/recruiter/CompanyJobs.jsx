@@ -1,11 +1,11 @@
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import DataTable from '../../components/ui/DataTable';
 import { jobsData } from '../../data/social';
 
 export default function CompanyJobs() {
   return (
     <div>
-      <PageHeader title="Jobs" subtitle="Manage your company's open roles." actions={<button className="btn-primary">+ POST NEW JOB</button>} />
+      <PageHeader title="Jobs" subtitle="Manage your company's open roles." actions={<Button tone="primary">+ POST NEW JOB</Button>} />
       <DataTable
         columns={['Role', 'Location', 'Type', 'Salary', 'Posted', 'Status']}
         rows={jobsData}

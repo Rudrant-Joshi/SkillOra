@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { PageHeader, EmptyState } from '../../components/ui/Primitives';
+import { PageHeader, Button, EmptyState } from '../../components/ui/Primitives';
 import { ProgressBar } from '../../components/ui/AnimatedNumber';
 import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { candidatesData } from '../../data/recruiter';
@@ -50,10 +50,10 @@ export default function Scorecard() {
         ))}
       </StaggerContainer>
       <Reveal delay={0.15}>
-        <div className="flex gap-3 mt-8">
-          <button className="btn-primary">SHORTLIST</button>
-          <button className="btn-secondary">SCHEDULE INTERVIEW</button>
-          <button className="btn-secondary">REJECT</button>
+        <div className="flex gap-3 mt-8 flex-wrap">
+          <Button tone="primary">SHORTLIST</Button>
+          <Button tone="secondary">SCHEDULE INTERVIEW</Button>
+          <Button tone="secondary">REJECT</Button>
         </div>
       </Reveal>
     </div>

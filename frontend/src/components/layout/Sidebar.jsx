@@ -45,43 +45,70 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
                 {group.label}
               </motion.div>
             )}
-            {group.items.map((item) => (
-              <motion.div
-                key={item.t}
-                variants={{ hidden: reduced ? { opacity: 0 } : { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { duration: 0.32, ease: ease.out } } }}
-              >
-                <NavLink
-                  to={routeFor[item.t] || '/app/dashboard'}
-                  onClick={onCloseMobile}
-                  className={({ isActive }) =>
-                    `group relative flex items-center gap-3 px-3.5 py-[11px] text-xs tracking-wider uppercase overflow-hidden transition-colors ${
-                      isActive ? 'text-white bg-surface2' : 'text-textDim hover:text-white hover:bg-surface2'
-                    }`
-                  }
+            {group.items.map((item) => {
+              const route = routeFor[item.t] || '/app/dashboard';
+              return (
+                <motion.div
+                  key={item.t}
+                  variants={{ hidden: reduced ? { opacity: 0 } : { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { duration: 0.32, ease: ease.out } } }}
                 >
-                  {({ isActive }) => (
-                    <>
-                      {isActive && (
-                        <motion.span
-                          layoutId="sidebar-active-indicator"
-                          className="absolute left-0 top-0 bottom-0 w-[2px] bg-green"
-                          transition={{ type: 'spring', stiffness: 500, damping: 40 }}
-                        />
-                      )}
-                      <motion.span
-                        className="w-1.5 h-1.5 flex-shrink-0"
-                        animate={{ background: isActive ? 'var(--green)' : 'var(--text-mute)', boxShadow: isActive ? '0 0 8px var(--green)' : '0 0 0px transparent' }}
-                        whileHover={reduced ? undefined : { x: 3 }}
-                        transition={{ duration: 0.2 }}
-                      />
-                      <motion.span whileHover={reduced ? undefined : { x: 3 }} transition={{ duration: 0.15 }}>
-                        {item.l}
-                      </motion.span>
-                    </>
-                  )}
-                </NavLink>
-              </motion.div>
-            ))}
+                  <NavLink
+                    to={route}
+                    onClick={onCloseMobile}
+                    className={({ isActive }) =>
+                      `group relative flex items-center gap-3 px-3.5 py-[11px] text-xs tracking-wider uppercase overflow-hidden transition-colors ${
+                        isActive ? 'text-white' : 'text-textDim hover:text-white'
+                      }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        {isActive && (
+                          <motion.span
+                            layoutId="sidebar-active-bg"
+                            className="absolute inset-0 bg-surface2 border-l-2 border-green"
+                            transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                          />
+                        )}
+                        <motion.div
+                          className="relative z-10 flex items-center gap-3 w-full"
+                          animate={isActive && !reduced ? { x: 2 } : { x: 0 }}
+                          transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                        >
+                          <motion.span
+                            className="w-1.5 h-1.5 flex-shrink-0"
+                            animate={{
+                              background: isActive ? 'var(--green)' : 'var(--text-mute)',
+                              boxShadow: isActive ? '0 0 10px var(--green)' : '0 0 0px transparent',
+                              scale: isActive ? 1.2 : 1,
+                            }}
+                            whileHover={reduced ? undefined : { scale: 1.3, x: 2 }}
+                            transition={{ duration: 0.2 }}
+                          />
+                          <motion.span
+                            className="flex-1 font-medium tracking-wide"
+                            whileHover={reduced ? undefined : { x: 2 }}
+                            transition={{ duration: 0.15 }}
+                          >
+                            {item.l}
+                          </motion.span>
+                          {isActive && (
+                            <motion.span
+                              initial={{ opacity: 0, x: -4 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="text-[9px] text-green font-mono"
+                            >
+                              ▸
+                            </motion.span>
+                          )}
+                        </motion.div>
+                      </>
+                    )}
+                  </NavLink>
+                </motion.div>
+              );
+            })}
           </div>
         ))}
       </motion.nav>

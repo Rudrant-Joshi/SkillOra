@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { conversationsData } from '../../data/social';
 
@@ -48,7 +48,7 @@ export default function Messages() {
                 </div>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <input
                 className="field-input flex-1 m-0"
                 placeholder="Write a message…"
@@ -56,9 +56,9 @@ export default function Messages() {
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && send()}
               />
-              <button className="btn-primary" onClick={send}>
+              <Button tone="primary" onClick={send}>
                 SEND
-              </button>
+              </Button>
             </div>
           </div>
         </div>

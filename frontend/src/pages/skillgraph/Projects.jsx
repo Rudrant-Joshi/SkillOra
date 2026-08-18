@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { PageHeader, Card } from '../../components/ui/Primitives';
+import { PageHeader, Card, Button } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { projects } from '../../data/skills';
 
@@ -10,9 +10,9 @@ export default function Projects() {
         title="Projects"
         subtitle="Projects analyzed for verified skill evidence."
         actions={
-          <Link to="/app/projects-import" className="btn-primary">
+          <Button to="/app/projects-import" tone="primary">
             + IMPORT / ANALYZE PROJECT
-          </Link>
+          </Button>
         }
       />
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-4">

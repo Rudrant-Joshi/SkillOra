@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { PageHeader, Card, StatCard } from '../../components/ui/Primitives';
+import { PageHeader, Card, StatCard, Button, LaserDivider } from '../../components/ui/Primitives';
 import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { ProgressBar, AnimatedNumber } from '../../components/ui/AnimatedNumber';
 import { skills, projects } from '../../data/skills';
@@ -15,9 +14,9 @@ export default function Dashboard() {
         title="Dashboard"
         subtitle="Evidence-backed overview of your skills, projects, and coding activity."
         actions={
-          <Link to="/app/projects" className="btn-primary">
+          <Button to="/app/projects" tone="primary">
             + ANALYZE PROJECT
-          </Link>
+          </Button>
         }
       />
 
@@ -28,39 +27,50 @@ export default function Dashboard() {
         <StatCard label="Assessments" value={4} delay={0.15} />
       </div>
 
-      <div className="divider" />
+      <LaserDivider />
 
-      <Reveal>
-        <div className="text-xs tracking-widest uppercase text-textDim mb-4">Coding Activity</div>
+      <Reveal variant="slideLeft">
+        <div className="text-xs tracking-widest uppercase text-textDim mb-4 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
+          Coding Activity
+        </div>
       </Reveal>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <div className="eyebrow">Problems Solved</div>
-          <div className="big-num text-green text-[28px]">
-            <AnimatedNumber value={solved.length} />
-          </div>
-        </Card>
-        <Card>
-          <div className="eyebrow">Snippets</div>
-          <div className="big-num text-[28px]">
-            <AnimatedNumber value={snippets.length} />
-          </div>
-        </Card>
-        <Card>
-          <div className="eyebrow">Languages</div>
-          <div className="big-num text-[28px]">
-            <AnimatedNumber value={langCount} />
-          </div>
-        </Card>
-        <Card>
-          <div className="eyebrow">Followers · Following</div>
-          <div className="big-num text-[28px]">
-            128 · <AnimatedNumber value={followingCount} />
-          </div>
-        </Card>
-      </div>
+      <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StaggerItem>
+          <Card hover>
+            <div className="eyebrow">Problems Solved</div>
+            <div className="big-num text-green text-[28px]">
+              <AnimatedNumber value={solved.length} />
+            </div>
+          </Card>
+        </StaggerItem>
+        <StaggerItem>
+          <Card hover>
+            <div className="eyebrow">Snippets</div>
+            <div className="big-num text-[28px]">
+              <AnimatedNumber value={snippets.length} />
+            </div>
+          </Card>
+        </StaggerItem>
+        <StaggerItem>
+          <Card hover>
+            <div className="eyebrow">Languages</div>
+            <div className="big-num text-[28px]">
+              <AnimatedNumber value={langCount} />
+            </div>
+          </Card>
+        </StaggerItem>
+        <StaggerItem>
+          <Card hover>
+            <div className="eyebrow">Followers · Following</div>
+            <div className="big-num text-[28px]">
+              128 · <AnimatedNumber value={followingCount} />
+            </div>
+          </Card>
+        </StaggerItem>
+      </StaggerContainer>
 
-      <div className="divider" />
+      <LaserDivider />
 
       <Reveal>
         <div className="text-xs tracking-widest uppercase text-textDim mb-4">Skill Overview</div>
@@ -81,7 +91,7 @@ export default function Dashboard() {
         ))}
       </StaggerContainer>
 
-      <div className="divider" />
+      <LaserDivider />
 
       <Reveal>
         <div className="text-xs tracking-widest uppercase text-textDim mb-4">Recent Projects</div>

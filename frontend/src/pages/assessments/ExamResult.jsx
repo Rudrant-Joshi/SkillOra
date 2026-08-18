@@ -1,6 +1,6 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import { AnimatedNumber } from '../../components/ui/AnimatedNumber';
 import { assessmentsData } from '../../data/recruiter';
 
@@ -23,13 +23,13 @@ export default function ExamResult() {
           </motion.div>
         </div>
       </div>
-      <div className="flex gap-3 mt-6">
-        <Link to="/app/assessments" className="btn-secondary">
+      <div className="flex gap-3 mt-6 flex-wrap">
+        <Button to="/app/assessments" tone="secondary">
           BACK TO ASSESSMENTS
-        </Link>
-        <Link to="/app/passport" className="btn-primary">
+        </Button>
+        <Button to="/app/passport" tone="primary">
           VIEW SKILL PASSPORT
-        </Link>
+        </Button>
       </div>
     </div>
   );

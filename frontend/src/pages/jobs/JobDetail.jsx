@@ -1,6 +1,4 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { PageHeader, EmptyState } from '../../components/ui/Primitives';
+import { PageHeader, Card, Button, EmptyState } from '../../components/ui/Primitives';
 import { ProgressBar } from '../../components/ui/AnimatedNumber';
 import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { jobsData } from '../../data/social';
@@ -32,9 +30,9 @@ export default function JobDetail() {
         title={job.title}
         subtitle={`${job.company} · ${job.loc} · ${job.type} · ${job.salary}`}
         actions={
-          <button className="btn-primary" onClick={handleApply} disabled={applied}>
+          <Button tone="primary" onClick={handleApply} disabled={applied}>
             {applied ? '✓ APPLIED' : 'APPLY NOW'}
-          </button>
+          </Button>
         }
       />
       <Reveal>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Card, Button } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { useDemoState } from '../../context/DemoStateContext';
 
@@ -21,25 +21,30 @@ export default function Network() {
       <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {filtered.map((n) => (
           <StaggerItem key={n.name}>
-            <div className="card">
-              <div className="h-display text-sm">{n.name}</div>
-              <div className="dim text-[11px] mt-1 text-textDim">{n.role}</div>
-              <div className="flex gap-1.5 flex-wrap mt-2.5">
-                {n.skills.map((s) => (
-                  <span key={s} className="tech-pill">{s}</span>
-                ))}
+            <Card hover className="flex flex-col justify-between h-full">
+              <div>
+                <div className="h-display text-sm text-white">{n.name}</div>
+                <div className="dim text-[11px] mt-1 text-textDim">{n.role}</div>
+                <div className="flex gap-1.5 flex-wrap mt-2.5">
+                  {n.skills.map((s) => (
+                    <span key={s} className="tech-pill">{s}</span>
+                  ))}
+                </div>
               </div>
-              <div className="flex justify-between items-center mt-3.5">
-                <span className="badge strong">{n.conf}% CONF</span>
-                <span className="text-textDim text-[10px]">{n.verified} verified</span>
+              <div className="mt-4">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="badge strong">{n.conf}% CONF</span>
+                  <span className="text-textDim text-[10px]">{n.verified} verified</span>
+                </div>
+                <Button
+                  tone="small"
+                  className={`w-full justify-center ${n.following ? 'active' : ''}`}
+                  onClick={() => toggleFollow(n.name)}
+                >
+                  {n.following ? '✓ FOLLOWING' : '+ FOLLOW'}
+                </Button>
               </div>
-              <button
-                className={`btn-small w-full justify-center mt-3.5 ${n.following ? 'active' : ''}`}
-                onClick={() => toggleFollow(n.name)}
-              >
-                {n.following ? 'FOLLOWING' : 'FOLLOW'}
-              </button>
-            </div>
+            </Card>
           </StaggerItem>
         ))}
       </StaggerContainer>

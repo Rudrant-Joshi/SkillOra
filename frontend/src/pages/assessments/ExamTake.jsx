@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import CodeEditor from '../../components/editors/CodeEditor';
 import { assessmentsData, examQuestions } from '../../data/recruiter';
 
@@ -71,9 +71,9 @@ export default function ExamTake() {
       </AnimatePresence>
 
       <div className="flex justify-end mt-5">
-        <button className="btn-primary" onClick={next}>
+        <Button tone="primary" onClick={next}>
           {qIndex === examQuestions.length - 1 ? 'FINISH ASSESSMENT' : 'NEXT QUESTION →'}
-        </button>
+        </Button>
       </div>
     </div>
   );

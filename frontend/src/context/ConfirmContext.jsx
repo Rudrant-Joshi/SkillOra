@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Button } from '../components/ui/Primitives';
 
 const ConfirmContext = createContext(null);
 
@@ -42,12 +43,12 @@ export function ConfirmProvider({ children }) {
               <div className="h-display text-lg">{modal.title || 'Are you sure?'}</div>
               <div className="dim mono text-xs mt-3 leading-relaxed text-textDim">{modal.message}</div>
               <div className="flex gap-3 mt-7">
-                <button className="btn-secondary flex-1 justify-center" onClick={() => close(false)}>
+                <Button tone="secondary" className="w-full justify-center" onClick={() => close(false)}>
                   CANCEL
-                </button>
-                <button className="btn-primary flex-1 justify-center" onClick={() => close(true)}>
+                </Button>
+                <Button tone="primary" className="w-full justify-center" onClick={() => close(true)}>
                   {modal.confirmLabel}
-                </button>
+                </Button>
               </div>
             </motion.div>
           </motion.div>

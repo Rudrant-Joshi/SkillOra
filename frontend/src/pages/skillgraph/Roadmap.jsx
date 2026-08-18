@@ -1,4 +1,4 @@
-import { PageHeader, Card } from '../../components/ui/Primitives';
+import { PageHeader, Card, LaserDivider } from '../../components/ui/Primitives';
 import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { ProgressBar } from '../../components/ui/AnimatedNumber';
 import { roadmap } from '../../data/skills';
@@ -17,7 +17,7 @@ export default function Roadmap() {
   return (
     <div>
       <PageHeader title="Your Roadmap" subtitle="A prioritized plan to close your biggest skill gaps." />
-      <Reveal>
+      <Reveal variant="pop">
         <div className="flex justify-between items-center font-mono">
           <div className="text-[11px] text-textDim tracking-wider">{done} / {roadmap.length} TASKS COMPLETED</div>
           <div className="text-green text-[11px] font-bold tracking-wider">READINESS 68%</div>
@@ -26,7 +26,7 @@ export default function Roadmap() {
           <ProgressBar pct={pct || 37} />
         </div>
       </Reveal>
-      <div className="divider" />
+      <LaserDivider />
       <StaggerContainer className="flex flex-col gap-3">
         {roadmap.map((step) => (
           <StaggerItem key={step.n}>

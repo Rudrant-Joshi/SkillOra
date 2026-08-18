@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import { StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { assessmentsData } from '../../data/recruiter';
 
@@ -24,11 +23,13 @@ export default function Assessments() {
                 ))}
               </div>
               {a.status === 'COMPLETED' ? (
-                <div className="mt-3.5 text-green mono text-sm">SCORE: {a.score}%</div>
+                <div className="mt-3.5 text-green mono text-sm font-bold">SCORE: {a.score}%</div>
               ) : a.status === 'NOT STARTED' ? (
-                <Link to={`/app/assessments/${a.id}/take`} className="btn-primary w-full justify-center mt-3.5">
-                  START ASSESSMENT
-                </Link>
+                <div className="mt-3.5">
+                  <Button to={`/app/assessments/${a.id}/take`} tone="primary" className="w-full justify-center">
+                    START ASSESSMENT
+                  </Button>
+                </div>
               ) : (
                 <div className="mt-3.5 text-textMute mono text-[11px]">Assessment window closed</div>
               )}

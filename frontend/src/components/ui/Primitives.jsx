@@ -45,32 +45,46 @@ export function Card({ children, className = '', hover = true, featured = false,
   return content;
 }
 
-/** Motion-aware button — heavy press/hover feedback + optional magnetic pull for primary CTAs. */
-export function Button({ children, tone = 'primary', magnetic = false, className = '', as: Comp = 'button', ...rest }) {
+import { Link } from 'react-router-dom';
+
+/** Motion-aware button — heavy press/hover feedback + magnetic pull (as on Passport page). */
+export function Button({
+  children,
+  tone = 'primary',
+  magnetic = true,
+  className = '',
+  as: Comp,
+  to,
+  disabled = false,
+  ...rest
+}) {
+  const Component = Comp || (to ? Link : 'button');
   const toneClass = tone === 'primary' ? 'btn-primary' : tone === 'secondary' ? 'btn-secondary' : 'btn-small';
   const el = (
     <motion.div
-      whileHover={{ scale: 1.05, y: -3 }}
-      whileTap={{ scale: 0.92 }}
+      whileHover={disabled ? undefined : { scale: 1.05, y: -3 }}
+      whileTap={disabled ? undefined : { scale: 0.94 }}
       transition={{ type: 'spring', stiffness: 420, damping: 22 }}
-      className="inline-block"
+      className={`inline-block ${className.includes('w-full') ? 'w-full' : ''}`}
     >
-      <Comp className={`${toneClass} ${className}`} {...rest}>
+      <Component to={to} disabled={disabled} className={`${toneClass} ${className}`} {...rest}>
         {children}
-      </Comp>
+      </Component>
     </motion.div>
   );
-  return magnetic ? <Magnetic className="inline-block">{el}</Magnetic> : el;
+  return magnetic && !disabled ? <Magnetic className={`inline-block ${className.includes('w-full') ? 'w-full' : ''}`}>{el}</Magnetic> : el;
 }
 
 export function StatCard({ label, value, suffix = '', tone = '', delay = 0 }) {
   return (
-    <Reveal delay={delay} variant="scale">
-      <Card>
+    <Reveal delay={delay} variant="pop">
+      <Card hover featured={false} className="relative overflow-hidden group">
         <div className="eyebrow">{label}</div>
-        <div className={`big-num text-3xl ${tone}`}>
+        <div className={`big-num text-3xl md:text-4xl ${tone} mt-1`}>
           <AnimatedNumber value={value} suffix={suffix} />
         </div>
+        {/* Subtle hover laser accent */}
+        <div className="absolute top-0 right-0 w-16 h-16 bg-green/5 rounded-full blur-xl pointer-events-none group-hover:bg-green/15 transition-all duration-300" />
       </Card>
     </Reveal>
   );
@@ -78,29 +92,36 @@ export function StatCard({ label, value, suffix = '', tone = '', delay = 0 }) {
 
 export function Badge({ children, tone = '' }) {
   return (
-    <motion.span initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} className={`badge ${tone}`}>
+    <motion.span
+      initial={{ opacity: 0, scale: 0.75 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 480, damping: 22 }}
+      className={`badge ${tone}`}
+    >
       {children}
     </motion.span>
   );
 }
 
+export { LaserDivider } from '../animations/Reveal';
+
 /** Page header — label / title / subtitle / actions assemble in sequence. */
 export function PageHeader({ title, subtitle, actions }) {
   return (
     <SequencedGroup gap={0.07}>
-      <div className="flex justify-between items-start flex-wrap gap-4">
+      <div className="flex justify-between items-start flex-wrap gap-4 mb-7">
         <div>
-          <SequencedItem direction="up" distance={8}>
-            <div className="h-display text-2xl md:text-[26px]">{title}</div>
+          <SequencedItem direction="up" distance={10}>
+            <div className="h-display text-2xl md:text-[28px] tracking-tight">{title}</div>
           </SequencedItem>
           {subtitle && (
-            <SequencedItem direction="up" distance={6}>
-              <div className="dim text-xs mt-1.5 text-textDim">{subtitle}</div>
+            <SequencedItem direction="up" distance={8}>
+              <div className="dim text-xs mt-1.5 text-textDim tracking-wide">{subtitle}</div>
             </SequencedItem>
           )}
         </div>
         {actions && (
-          <SequencedItem direction="up" distance={4}>
+          <SequencedItem direction="up" distance={6}>
             <div className="flex gap-2.5 flex-wrap">{actions}</div>
           </SequencedItem>
         )}

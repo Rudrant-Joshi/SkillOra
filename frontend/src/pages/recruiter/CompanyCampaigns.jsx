@@ -1,4 +1,4 @@
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import DataTable from '../../components/ui/DataTable';
 import { campaignsData } from '../../data/recruiter';
 
@@ -7,7 +7,7 @@ const STATE_TONE = { Active: 'strong', Draft: '', Completed: 'warn' };
 export default function CompanyCampaigns() {
   return (
     <div>
-      <PageHeader title="Hiring Campaigns" subtitle="Track outreach, completion, and conversion by campaign." actions={<button className="btn-primary">+ NEW CAMPAIGN</button>} />
+      <PageHeader title="Hiring Campaigns" subtitle="Track outreach, completion, and conversion by campaign." actions={<Button tone="primary">+ NEW CAMPAIGN</Button>} />
       <DataTable
         columns={['Campaign', 'Job', 'State', 'Invited', 'Started', 'Completed', 'Shortlisted', 'Selected']}
         rows={campaignsData}

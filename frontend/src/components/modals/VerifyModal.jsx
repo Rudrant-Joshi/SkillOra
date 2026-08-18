@@ -1,4 +1,5 @@
 import { Modal } from '../ui/Overlay';
+import { Button } from '../ui/Primitives';
 
 export default function VerifyModal({ open, onClose }) {
   return (
@@ -10,9 +11,11 @@ export default function VerifyModal({ open, onClose }) {
         <div className="h-display text-green text-5xl mt-6 drop-shadow-[0_0_12px_rgba(57,255,20,0.3)]">82%</div>
         <div className="eyebrow mt-1 text-textDim">SKILL CONFIDENCE</div>
         <div className="badge strong mt-5">◆ VERIFIED BY SKILLGRAPH</div>
-        <button className="btn-secondary w-full justify-center mt-7" onClick={onClose}>
-          CLOSE PREVIEW
-        </button>
+        <div className="mt-7">
+          <Button tone="secondary" className="w-full justify-center" onClick={onClose}>
+            CLOSE PREVIEW
+          </Button>
+        </div>
       </div>
     </Modal>
   );

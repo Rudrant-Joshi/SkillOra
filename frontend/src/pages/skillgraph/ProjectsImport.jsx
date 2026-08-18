@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
-import { PageHeader } from '../../components/ui/Primitives';
+import { PageHeader, Button } from '../../components/ui/Primitives';
 import { apStepsData } from '../../data/skills';
 
 export default function ProjectsImport() {
@@ -42,9 +42,9 @@ export default function ProjectsImport() {
             value={repoUrl}
             onChange={(e) => setRepoUrl(e.target.value)}
           />
-          <button type="submit" className="btn-primary w-full justify-center">
+          <Button type="submit" tone="primary" className="w-full justify-center">
             ANALYZE REPOSITORY
-          </button>
+          </Button>
         </form>
       )}
 

@@ -9,9 +9,13 @@ from functools import lru_cache
 from pathlib import Path
 
 import yaml
+from dotenv import load_dotenv
 from pydantic import BaseModel
 
 CONFIG_DIR = Path(__file__).resolve().parents[2] / "configs"
+
+# Load .env from the ml/ root if present
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 
 class Settings(BaseModel):

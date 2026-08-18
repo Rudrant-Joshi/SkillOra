@@ -7,30 +7,46 @@ import Magnetic from '../../components/motion/Magnetic';
 import { springs, ease } from '../../lib/motionConfig';
 
 const ROLES = [
-  { id: 'developer', label: 'Developer' },
+  { id: 'developer', label: 'Candidate' },
   { id: 'recruiter', label: 'Recruiter' },
   { id: 'company', label: 'Company Admin' },
 ];
 
+const CREDENTIALS = {
+  developer: { email: 'candidate@skillgraph.dev', password: 'candidate123' },
+  recruiter: { email: 'trainer@techcorp.io', password: 'trainer123' },
+  company: { email: 'admin@techcorp.io', password: 'admin123' },
+};
+
 export default function Login() {
-  const [email, setEmail] = useState('rudrant@demo.dev');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('developer');
   const [status, setStatus] = useState('');
-  const { login } = useAuth();
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) {
-      setStatus('Enter an email to continue.');
+    if (!email.trim() || !password) {
+      setStatus('Enter your email and password.');
       return;
     }
-    setStatus('Validating demo credentials…');
-    setTimeout(() => {
-      const dest = login({ email, role });
+    setStatus('Connecting to SkillGraph…');
+    try {
+      const dest = await login({ email, password, role });
       navigate(dest, { replace: true });
-    }, 350);
+    } catch (err) {
+      setStatus(err.message || 'Login failed');
+    }
+  };
+
+  const fillDemo = (roleId) => {
+    const creds = CREDENTIALS[roleId];
+    setEmail(creds.email);
+    setPassword(creds.password);
+    setRole(roleId);
+    setStatus(`Credentials: ${creds.email} / ${creds.password}`);
   };
 
   return (
@@ -71,7 +87,7 @@ export default function Login() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.4 }}
         >
-          Frontend demo — no backend is connected. Any email/password combination signs you into a mock session.
+          Connecting to the real SkillGraph backend for authenticated, ML-scored assessments.
         </motion.div>
 
         <form onSubmit={handleSubmit}>
@@ -131,6 +147,13 @@ export default function Login() {
                 </button>
               ))}
             </div>
+            <button
+              type="button"
+              onClick={() => fillDemo(role)}
+              className="text-xs text-green hover:text-white transition-colors"
+            >
+              ↥ Use demo credentials
+            </button>
           </motion.div>
 
           <motion.div
@@ -141,15 +164,15 @@ export default function Login() {
             <Magnetic strength={0.15}>
               <motion.button
                 type="submit"
+                disabled={loading}
                 className="btn-solid mt-5 w-full bg-white text-black border-2 border-white font-bold tracking-widest text-[13px] py-4 flex items-center justify-center gap-2.5 relative overflow-hidden"
                 whileHover={{ y: -2, backgroundColor: '#39FF14', borderColor: '#39FF14' }}
                 whileTap={{ scale: 0.98, y: 0 }}
                 transition={springs.snappy}
               >
                 <span className="relative z-10 flex items-center gap-2.5">
-                  SIGN IN <ArrowRight size={15} />
+                  {loading ? 'SIGNING IN…' : 'SIGN IN'} <ArrowRight size={15} />
                 </span>
-                {/* Shimmer effect */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   style={{
@@ -183,7 +206,7 @@ export default function Login() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
         >
-          Frontend-only demo session · stored in localStorage
+          Authenticated session · JWT stored in localStorage
         </motion.div>
       </div>
     </motion.div>

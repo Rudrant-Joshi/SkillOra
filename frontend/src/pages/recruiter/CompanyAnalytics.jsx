@@ -19,28 +19,39 @@ export default function CompanyAnalytics() {
   return (
     <div>
       <PageHeader title="Analytics" subtitle="Hiring funnel and campaign performance." />
-      <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4" stagger={0.06}>
-        {[
-          { label: 'Total Invited', value: totalInvited, tone: '' },
-          { label: 'Conversion Rate', value: 4, suffix: '%', tone: 'text-green' },
-          { label: 'Avg. Time to Hire', value: 18, suffix: 'd', tone: '' },
-          { label: 'Selected', value: totalSelected, tone: '' },
-        ].map((s) => (
-          <StaggerItem key={s.label}>
-            <Card>
-              <div className="eyebrow">{s.label}</div>
-              <div className={`big-num text-3xl ${s.tone}`}><AnimatedNumber value={s.value} suffix={s.suffix || ''} /></div>
-            </Card>
-          </StaggerItem>
-        ))}
+      <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StaggerItem>
+          <Card>
+            <div className="eyebrow">Total Invited</div>
+            <div className="big-num text-3xl"><AnimatedNumber value={totalInvited} /></div>
+          </Card>
+        </StaggerItem>
+        <StaggerItem>
+          <Card>
+            <div className="eyebrow">Conversion Rate</div>
+            <div className="big-num text-green text-3xl"><AnimatedNumber value={4} suffix="%" /></div>
+          </Card>
+        </StaggerItem>
+        <StaggerItem>
+          <Card>
+            <div className="eyebrow">Avg. Time to Hire</div>
+            <div className="big-num text-3xl"><AnimatedNumber value={18} suffix="d" /></div>
+          </Card>
+        </StaggerItem>
+        <StaggerItem>
+          <Card>
+            <div className="eyebrow">Selected</div>
+            <div className="big-num text-3xl"><AnimatedNumber value={totalSelected} /></div>
+          </Card>
+        </StaggerItem>
       </StaggerContainer>
       <div className="divider" />
       <Reveal>
         <div className="text-xs tracking-widest uppercase text-textDim mb-4">Hiring Funnel</div>
       </Reveal>
-      <div className="flex flex-col gap-4">
-        {funnel.map((f, i) => (
-          <Reveal key={f.label} delay={i * 0.06}>
+      <StaggerContainer className="flex flex-col gap-4">
+        {funnel.map((f) => (
+          <StaggerItem key={f.label}>
             <div>
               <div className="flex justify-between text-xs mb-1.5">
                 <span>{f.label}</span>
@@ -48,9 +59,9 @@ export default function CompanyAnalytics() {
               </div>
               <ProgressBar pct={f.pct} />
             </div>
-          </Reveal>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
     </div>
   );
 }

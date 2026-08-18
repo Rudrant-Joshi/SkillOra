@@ -1,53 +1,53 @@
 import { motion } from 'framer-motion';
-import { ease, duration, prefersReducedMotion } from '../../lib/motionConfig';
+import { ease, directionOffset } from '../../lib/motion';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
- * High-performance, GPU-only scroll reveal (opacity & transform).
- * No heavy CSS filters or blur animations that trigger layout repaints.
+ * Reveal — scroll/mount entrance primitive.
+ * Optimized for ultra-smooth 60/120fps hardware-accelerated sliding on scroll.
  */
 export function Reveal({
   children,
   delay = 0,
-  y,
-  x,
+  duration = 0.42,
+  distance = 18,
   direction = 'up',
-  mode = 'default',
+  variant = 'soft', // soft | scale | slide | none
+  scale,
+  once = true,
+  amount = 0.05,
+  margin = '0px 0px -40px 0px',
+  easing = ease.out,
   className = '',
+  style = {},
   as: Comp = motion.div,
   ...rest
 }) {
-  if (prefersReducedMotion()) {
-    const Tag = Comp === motion.div ? 'div' : Comp;
-    return <Tag className={className} {...rest}>{children}</Tag>;
-  }
+  const reduced = useReducedMotion();
 
-  let initial, target;
+  const resolvedScale = scale ?? (variant === 'scale' ? 0.97 : undefined);
+  const offset = reduced ? {} : directionOffset(direction, distance);
 
-  if (mode === 'scale') {
-    initial = { opacity: 0, scale: 0.97 };
-    target = { opacity: 1, scale: 1 };
-  } else if (mode === 'clipPath') {
-    initial = { opacity: 0, clipPath: 'inset(100% 0% 0% 0%)' };
-    target = { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)' };
-  } else {
-    const dist = 16;
-    const translate =
-      direction === 'down'  ? { y: y ?? -dist } :
-      direction === 'left'  ? { x: x ?? dist } :
-      direction === 'right' ? { x: x ?? -dist } :
-                              { y: y ?? dist };
-
-    initial = { opacity: 0, ...translate };
-    target = { opacity: 1, y: 0, x: 0 };
-  }
+  const initial = {
+    opacity: 0,
+    ...offset,
+    ...(resolvedScale !== undefined ? { scale: resolvedScale } : {}),
+  };
+  const animateTo = {
+    opacity: 1,
+    y: 0,
+    x: 0,
+    ...(resolvedScale !== undefined ? { scale: 1 } : {}),
+  };
 
   return (
     <Comp
-      initial={initial}
-      whileInView={target}
-      viewport={{ once: true, margin: '-20px' }}
-      transition={{ duration: 0.25, delay, ease: ease.out }}
+      initial={reduced ? { opacity: 0 } : initial}
+      whileInView={reduced ? { opacity: 1 } : animateTo}
+      viewport={{ once, margin, amount }}
+      transition={{ duration: reduced ? 0.15 : duration, delay: reduced ? 0 : delay, ease: easing }}
       className={className}
+      style={{ willChange: 'transform, opacity', ...style }}
       {...rest}
     >
       {children}
@@ -55,46 +55,85 @@ export function Reveal({
   );
 }
 
-export function StaggerContainer({ children, className = '', stagger: staggerVal = 0.04 }) {
+/** Same as Reveal but animates on mount instead of on scroll-into-view. */
+export function RevealMount({ children, delay = 0, distance = 16, direction = 'up', className = '', style = {}, ...rest }) {
+  const reduced = useReducedMotion();
+  const offset = reduced ? {} : directionOffset(direction, distance);
   return (
     <motion.div
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '-20px' }}
-      variants={{
-        hidden: {},
-        show: {
-          transition: {
-            staggerChildren: staggerVal,
-          },
-        },
-      }}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, ...offset }}
+      animate={{ opacity: 1, y: 0, x: 0 }}
+      transition={{ duration: reduced ? 0.15 : 0.4, delay: reduced ? 0 : delay, ease: ease.out }}
       className={className}
+      style={{ willChange: 'transform, opacity', ...style }}
+      {...rest}
     >
       {children}
     </motion.div>
   );
 }
 
-export function StaggerItem({ children, className = '', direction = 'up' }) {
-  if (prefersReducedMotion()) {
-    return <div className={className}>{children}</div>;
-  }
+/** Stagger container — wrap a list of <StaggerItem /> to cascade their entrance. */
+export function StaggerContainer({ children, className = '', stagger = 0.05, once = true, margin = '0px 0px -40px 0px', delayChildren = 0, ...rest }) {
+  const reduced = useReducedMotion();
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once, margin, amount: 0.05 }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: reduced ? 0 : stagger, delayChildren } } }}
+      className={className}
+      {...rest}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-  const dist = 12;
-  const translate =
-    direction === 'left'  ? { x: dist, y: 0 } :
-    direction === 'right' ? { x: -dist, y: 0 } :
-    direction === 'down'  ? { y: -dist } :
-                            { y: dist };
+export function StaggerItem({ children, className = '', direction = 'up', distance = 14, scale, style = {}, as: Comp = motion.div, ...rest }) {
+  const reduced = useReducedMotion();
+  const offset = directionOffset(direction, distance);
+  return (
+    <Comp
+      variants={{
+        hidden: reduced
+          ? { opacity: 0 }
+          : { opacity: 0, ...offset, ...(scale ? { scale } : {}) },
+        show: {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          ...(scale ? { scale: 1 } : {}),
+          transition: { duration: reduced ? 0.15 : 0.38, ease: ease.out },
+        },
+      }}
+      className={className}
+      style={{ willChange: 'transform, opacity', ...style }}
+      {...rest}
+    >
+      {children}
+    </Comp>
+  );
+}
 
+/** Assembles a page header in sequence: eyebrow → title → subtitle → actions. */
+export function SequencedGroup({ children, gap = 0.06 }) {
+  return (
+    <motion.div initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: gap } } }}>
+      {children}
+    </motion.div>
+  );
+}
+
+export function SequencedItem({ children, direction = 'up', distance = 10, className = '' }) {
+  const reduced = useReducedMotion();
+  const offset = directionOffset(direction, distance);
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, ...translate },
-        show:   { opacity: 1, y: 0, x: 0 },
+        hidden: reduced ? { opacity: 0 } : { opacity: 0, ...offset },
+        show: { opacity: 1, y: 0, x: 0, transition: { duration: reduced ? 0.15 : 0.4, ease: ease.out } },
       }}
-      transition={{ duration: 0.2, ease: ease.out }}
       className={className}
     >
       {children}

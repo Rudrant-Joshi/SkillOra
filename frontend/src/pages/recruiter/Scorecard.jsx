@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { PageHeader, EmptyState } from '../../components/ui/Primitives';
 import { ProgressBar } from '../../components/ui/AnimatedNumber';
+import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { candidatesData } from '../../data/recruiter';
 
 export default function Scorecard() {
@@ -26,29 +27,35 @@ export default function Scorecard() {
   return (
     <div>
       <PageHeader title={`${candidate.name} — Scorecard`} subtitle={candidate.skills} />
-      <div className="offset-panel mb-8">
-        <div className="inner p-8 text-center">
-          <div className="eyebrow">Overall Score</div>
-          <div className="h-display text-green text-5xl mt-2">{candidate.score}%</div>
-          <div className="badge strong mt-3">{candidate.status.toUpperCase()}</div>
-        </div>
-      </div>
-      <div className="flex flex-col gap-4">
-        {dims.map((d) => (
-          <div key={d.label}>
-            <div className="flex justify-between text-xs mb-1.5">
-              <span>{d.label}</span>
-              <span className="text-textDim">{d.pct}%</span>
-            </div>
-            <ProgressBar pct={d.pct} />
+      <Reveal variant="scale">
+        <div className="offset-panel mb-8">
+          <div className="inner p-8 text-center">
+            <div className="eyebrow">Overall Score</div>
+            <div className="h-display text-green text-5xl mt-2">{candidate.score}%</div>
+            <div className="badge strong mt-3">{candidate.status.toUpperCase()}</div>
           </div>
+        </div>
+      </Reveal>
+      <StaggerContainer className="flex flex-col gap-4">
+        {dims.map((d) => (
+          <StaggerItem key={d.label}>
+            <div>
+              <div className="flex justify-between text-xs mb-1.5">
+                <span>{d.label}</span>
+                <span className="text-textDim">{d.pct}%</span>
+              </div>
+              <ProgressBar pct={d.pct} />
+            </div>
+          </StaggerItem>
         ))}
-      </div>
-      <div className="flex gap-3 mt-8">
-        <button className="btn-primary">SHORTLIST</button>
-        <button className="btn-secondary">SCHEDULE INTERVIEW</button>
-        <button className="btn-secondary">REJECT</button>
-      </div>
+      </StaggerContainer>
+      <Reveal delay={0.15}>
+        <div className="flex gap-3 mt-8">
+          <button className="btn-primary">SHORTLIST</button>
+          <button className="btn-secondary">SCHEDULE INTERVIEW</button>
+          <button className="btn-secondary">REJECT</button>
+        </div>
+      </Reveal>
     </div>
   );
 }

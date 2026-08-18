@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PageHeader, EmptyState } from '../../components/ui/Primitives';
 import { ProgressBar } from '../../components/ui/AnimatedNumber';
+import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { jobsData } from '../../data/social';
 import { useToast } from '../../context/ToastContext';
 
@@ -36,33 +37,39 @@ export default function JobDetail() {
           </button>
         }
       />
-      <div className="card-flat">
-        <div className="flex justify-between items-center mb-3">
-          <div className="eyebrow">Overall Match</div>
-          <span className={`badge ${job.match >= 70 ? 'strong' : job.match >= 50 ? 'warn' : 'gap'}`}>{job.match}%</span>
-        </div>
-        <ProgressBar pct={job.match} tone={job.match < 50 ? 'red' : job.match < 70 ? 'amber' : ''} />
-      </div>
+      <Reveal>
+        <Card hover>
+          <div className="flex justify-between items-center mb-3 font-mono">
+            <div className="eyebrow m-0 text-white/90">Overall Match</div>
+            <span className={`badge ${job.match >= 70 ? 'strong' : job.match >= 50 ? 'warn' : 'gap'}`}>{job.match}% MATCH</span>
+          </div>
+          <ProgressBar pct={job.match} tone={job.match < 50 ? 'red' : job.match < 70 ? 'amber' : ''} />
+        </Card>
+      </Reveal>
 
       <div className="divider" />
-      <div className="text-xs tracking-widest uppercase text-textDim mb-4">Requirement Breakdown</div>
-      <div className="flex flex-col gap-3">
+      <Reveal>
+        <div className="text-xs tracking-widest uppercase text-textDim mb-4">Requirement Breakdown</div>
+      </Reveal>
+      <StaggerContainer className="flex flex-col gap-3">
         {job.req.map((r) => {
           const met = r.have >= r.need;
           return (
-            <div key={r.s} className="skill-row cursor-default">
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between text-[11px] mb-1.5">
-                  <span>{r.s}</span>
-                  <span className="text-textDim">You: {r.have}% · Need: {r.need}%</span>
+            <StaggerItem key={r.s}>
+              <div className="skill-row cursor-default">
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between text-[11px] mb-1.5">
+                    <span>{r.s}</span>
+                    <span className="text-textDim">You: {r.have}% · Need: {r.need}%</span>
+                  </div>
+                  <ProgressBar pct={r.have} tone={!met ? 'red' : ''} />
                 </div>
-                <ProgressBar pct={r.have} tone={!met ? 'red' : ''} />
+                <span className={`badge ${met ? 'strong' : 'gap'} ml-3`}>{met ? 'MET' : 'GAP'}</span>
               </div>
-              <span className={`badge ${met ? 'strong' : 'gap'} ml-3`}>{met ? 'MET' : 'GAP'}</span>
-            </div>
+            </StaggerItem>
           );
         })}
-      </div>
+      </StaggerContainer>
     </div>
   );
 }

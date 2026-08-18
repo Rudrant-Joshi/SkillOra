@@ -1,9 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { PageHeader } from '../../components/ui/Primitives';
-import Spotlight from '../../components/motion/Spotlight';
-import TiltCard from '../../components/motion/TiltCard';
 import { useDemoState } from '../../context/DemoStateContext';
-import { springs, ease } from '../../lib/motionConfig';
 
 function ActivityBody({ item }) {
   if (item.type === 'solved_problem') {
@@ -43,44 +40,27 @@ export default function Feed() {
       <PageHeader title="Feed" subtitle="Activity from your network — real work, not self-reported claims." />
       <div className="flex flex-col gap-3 max-w-2xl">
         <AnimatePresence initial={false}>
-          {feed.map((item, i) => (
+          {feed.map((item) => (
             <motion.div
               key={item.id}
               layout
-              initial={{ opacity: 0, y: -16, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.35, delay: i * 0.04, ease: ease.out }}
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, borderColor: 'rgba(57, 255, 20, 0.5)', boxShadow: '0 16px 32px -12px rgba(0,0,0,0.6), 0 0 20px -4px rgba(57,255,20,0.25)' }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="card-flat border border-borderDim transition-colors"
             >
-              <TiltCard tiltMax={2.5}>
-                <Spotlight>
-                  <div className="card-flat">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="h-display text-sm">{item.name}</div>
-                        <div className="text-textDim text-[10px] mt-0.5">{item.role}</div>
-                      </div>
-                    </div>
-                    <ActivityBody item={item} />
-                    <div className="flex gap-4 mt-3 text-textDim text-[11px]">
-                      <motion.span
-                        className="cursor-pointer"
-                        whileHover={{ scale: 1.1, color: '#39FF14' }}
-                        whileTap={{ scale: 0.9 }}
-                        transition={springs.snappy}
-                      >
-                        ♥ {item.likes ?? 0}
-                      </motion.span>
-                      <motion.span
-                        className="cursor-pointer"
-                        whileHover={{ scale: 1.1 }}
-                        transition={springs.snappy}
-                      >
-                        💬 {item.comments ?? 0}
-                      </motion.span>
-                    </div>
-                  </div>
-                </Spotlight>
-              </TiltCard>
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="h-display text-sm text-white">{item.name}</div>
+                  <div className="text-textDim text-[10px] mt-0.5">{item.role}</div>
+                </div>
+              </div>
+              <ActivityBody item={item} />
+              <div className="flex gap-4 mt-3 text-textDim text-[11px] font-mono">
+                <span className="hover:text-green cursor-pointer transition-colors">♥ {item.likes ?? 0}</span>
+                <span className="hover:text-white cursor-pointer transition-colors">💬 {item.comments ?? 0}</span>
+              </div>
             </motion.div>
           ))}
         </AnimatePresence>

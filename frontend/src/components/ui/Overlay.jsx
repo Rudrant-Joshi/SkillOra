@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { springs, ease, duration } from '../../lib/motionConfig';
 
 function useBodyScrollLock(open) {
   useEffect(() => {
@@ -27,29 +26,19 @@ export function Modal({ open, onClose, children, width = 480 }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[130] flex items-center justify-center p-5"
+          className="fixed inset-0 z-[130] flex items-center justify-center bg-black/85 backdrop-blur-sm p-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: duration.normal }}
           onClick={onClose}
         >
-          {/* Backdrop with blur */}
-          <motion.div
-            className="absolute inset-0 bg-black/85"
-            initial={{ backdropFilter: 'blur(0px)' }}
-            animate={{ backdropFilter: 'blur(6px)' }}
-            exit={{ backdropFilter: 'blur(0px)' }}
-            transition={{ duration: duration.medium }}
-          />
-          {/* Modal content */}
           <motion.div
             style={{ maxWidth: width }}
-            className="w-full bg-black border-2 border-white p-8 max-h-[85vh] overflow-y-auto scrollbar-thin relative z-10"
-            initial={{ opacity: 0, y: 24, scale: 0.95, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: 14, scale: 0.97, filter: 'blur(2px)' }}
-            transition={springs.smooth}
+            className="w-full bg-black border-2 border-white p-8 max-h-[85vh] overflow-y-auto scrollbar-thin"
+            initial={{ opacity: 0, y: 20, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.97 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
             {children}
@@ -77,11 +66,10 @@ export function Drawer({ open, onClose, children, side = 'right', width = 380 })
       {open && (
         <>
           <motion.div
-            className="fixed inset-0 z-[130] bg-black/70"
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(4px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            transition={{ duration: duration.normal }}
+            className="fixed inset-0 z-[130] bg-black/70 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={onClose}
           />
           <motion.div
@@ -90,7 +78,7 @@ export function Drawer({ open, onClose, children, side = 'right', width = 380 })
             initial={{ x }}
             animate={{ x: 0 }}
             exit={{ x }}
-            transition={springs.smooth}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
             {children}
           </motion.div>

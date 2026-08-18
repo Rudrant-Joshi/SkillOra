@@ -1,13 +1,9 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { PageHeader, Card, StatCard } from '../../components/ui/Primitives';
 import { Reveal, StaggerContainer, StaggerItem } from '../../components/animations/Reveal';
 import { ProgressBar, AnimatedNumber } from '../../components/ui/AnimatedNumber';
-import Spotlight from '../../components/motion/Spotlight';
-import Magnetic from '../../components/motion/Magnetic';
 import { skills, projects } from '../../data/skills';
 import { useDemoState } from '../../context/DemoStateContext';
-import { springs } from '../../lib/motionConfig';
 
 export default function Dashboard() {
   const { snippets, solved, followingCount } = useDemoState();
@@ -19,20 +15,17 @@ export default function Dashboard() {
         title="Dashboard"
         subtitle="Evidence-backed overview of your skills, projects, and coding activity."
         actions={
-          <Magnetic strength={0.2}>
-            <Link to="/app/projects" className="btn-primary">
-              + ANALYZE PROJECT
-            </Link>
-          </Magnetic>
+          <Link to="/app/projects" className="btn-primary">
+            + ANALYZE PROJECT
+          </Link>
         }
       />
 
-      {/* Stats row with staggered entrance */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard label="Skill Confidence" value={82} suffix="%" tone="text-green" delay={0} />
-        <StatCard label="Verified Skills" value={17} delay={0.06} />
-        <StatCard label="Projects" value={8} delay={0.12} />
-        <StatCard label="Assessments" value={4} delay={0.18} />
+        <StatCard label="Verified Skills" value={17} delay={0.05} />
+        <StatCard label="Projects" value={8} delay={0.1} />
+        <StatCard label="Assessments" value={4} delay={0.15} />
       </div>
 
       <div className="divider" />
@@ -40,40 +33,32 @@ export default function Dashboard() {
       <Reveal>
         <div className="text-xs tracking-widest uppercase text-textDim mb-4">Coding Activity</div>
       </Reveal>
-      <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StaggerItem>
-          <Card>
-            <div className="eyebrow">Problems Solved</div>
-            <div className="big-num text-green text-[28px]">
-              <AnimatedNumber value={solved.length} />
-            </div>
-          </Card>
-        </StaggerItem>
-        <StaggerItem>
-          <Card>
-            <div className="eyebrow">Snippets</div>
-            <div className="big-num text-[28px]">
-              <AnimatedNumber value={snippets.length} />
-            </div>
-          </Card>
-        </StaggerItem>
-        <StaggerItem>
-          <Card>
-            <div className="eyebrow">Languages</div>
-            <div className="big-num text-[28px]">
-              <AnimatedNumber value={langCount} />
-            </div>
-          </Card>
-        </StaggerItem>
-        <StaggerItem>
-          <Card>
-            <div className="eyebrow">Followers · Following</div>
-            <div className="big-num text-[28px]">
-              128 · <AnimatedNumber value={followingCount} />
-            </div>
-          </Card>
-        </StaggerItem>
-      </StaggerContainer>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <div className="eyebrow">Problems Solved</div>
+          <div className="big-num text-green text-[28px]">
+            <AnimatedNumber value={solved.length} />
+          </div>
+        </Card>
+        <Card>
+          <div className="eyebrow">Snippets</div>
+          <div className="big-num text-[28px]">
+            <AnimatedNumber value={snippets.length} />
+          </div>
+        </Card>
+        <Card>
+          <div className="eyebrow">Languages</div>
+          <div className="big-num text-[28px]">
+            <AnimatedNumber value={langCount} />
+          </div>
+        </Card>
+        <Card>
+          <div className="eyebrow">Followers · Following</div>
+          <div className="big-num text-[28px]">
+            128 · <AnimatedNumber value={followingCount} />
+          </div>
+        </Card>
+      </div>
 
       <div className="divider" />
 
@@ -83,11 +68,7 @@ export default function Dashboard() {
       <StaggerContainer className="flex flex-col gap-2.5">
         {skills.slice(0, 5).map((s) => (
           <StaggerItem key={s.name}>
-            <motion.div
-              className="skill-row"
-              whileHover={{ x: 2 }}
-              transition={springs.snappy}
-            >
+            <div className="skill-row">
               <div className="flex-1 min-w-0">
                 <div className="skill-name">{s.name}</div>
                 <div className="mt-2">
@@ -95,7 +76,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <span className={`badge ${s.badge}`}>{s.pct}%</span>
-            </motion.div>
+            </div>
           </StaggerItem>
         ))}
       </StaggerContainer>
@@ -110,7 +91,7 @@ export default function Dashboard() {
           <StaggerItem key={p.name}>
             <Card>
               <div className="flex justify-between items-start">
-                <div className="h-display text-base">{p.name}</div>
+                <div className="h-display text-sm">{p.name}</div>
                 <span className="badge strong">{p.health}%</span>
               </div>
               <div className="flex gap-1.5 flex-wrap mt-3">

@@ -11,3 +11,5 @@ SQLAlchemy==2.0.51
 PyJWT==2.13.0
 httpx==0.28.1
 python-dotenv==1.2.2
+# Production database driver (SQLAlchemy DATABASE_URL switches to postgresql+psycopg2)
+psycopg2-binary==2.9.10

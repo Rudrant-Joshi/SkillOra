@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
-from app.database import Base
+from app.database import Base, utcnow
 
 
 class MLPrediction(Base):
@@ -23,7 +23,7 @@ class MLPrediction(Base):
     latency_ms = Column(Float, default=0.0)
     success = Column(Boolean, default=True)
     error_code = Column(String(30), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     user = relationship("User", back_populates="predictions", foreign_keys=[user_id])
     attempt = relationship("Attempt", back_populates="predictions", foreign_keys=[attempt_id])

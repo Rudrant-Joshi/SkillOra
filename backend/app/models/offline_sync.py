@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Text
 from sqlalchemy.orm import relationship
 
-from app.database import Base
+from app.database import Base, utcnow
 
 
 class OfflineSync(Base):
@@ -22,7 +22,7 @@ class OfflineSync(Base):
     # JSON blob of the attempt payload the client captured while offline
     data_json = Column(Text, nullable=False)
     is_synced = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
     synced_at = Column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="offline_syncs", foreign_keys=[user_id])

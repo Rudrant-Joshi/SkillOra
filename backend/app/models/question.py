@@ -6,7 +6,7 @@ from sqlalchemy import JSON
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
-from app.database import Base
+from app.database import Base, utcnow
 
 
 class Question(Base):
@@ -30,7 +30,7 @@ class Question(Base):
     # For short_answer/system_design: grading rubric
     rubric = Column(JSON, default=list)
     is_public = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     assessment = relationship("Assessment", back_populates="questions")
     answers = relationship("Answer", back_populates="question", cascade="all, delete-orphan")

@@ -13,7 +13,7 @@ import os
 
 # Force a test database before importing app
 os.environ.setdefault("DATABASE_URL", "sqlite:///./test_skillgraph.db")
-os.environ.setdefault("SECRET_KEY", "test-secret-key-for-testing")
+os.environ.setdefault("SECRET_KEY", "skillora-test-secret-key-min-32-bytes-long-xyz")
 os.environ.setdefault("ML_GATEWAY_URL", "http://localhost:8000")
 
 import pytest

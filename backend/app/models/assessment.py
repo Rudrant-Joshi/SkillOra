@@ -6,7 +6,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, T
 from sqlalchemy import JSON
 from sqlalchemy.orm import relationship
 
-from app.database import Base
+from app.database import Base, utcnow
 
 
 class Assessment(Base):
@@ -25,7 +25,7 @@ class Assessment(Base):
     is_active = Column(Boolean, default=True)
     is_adaptive = Column(Boolean, default=True)
     scoring_rubric = Column(JSON, default=dict)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     company = relationship("Company", back_populates="assessments")
     questions = relationship("Question", back_populates="assessment", cascade="all, delete-orphan")

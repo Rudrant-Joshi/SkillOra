@@ -2,12 +2,23 @@ from __future__ import annotations
 
 import logging
 import sys
+from datetime import datetime, timezone
 from functools import lru_cache
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.config import get_settings
+
+
+def utcnow() -> datetime:
+    """Timezone-aware UTC timestamp (replaces deprecated datetime.utcnow).
+
+    Stored timestamps are tz-aware so they round-trip correctly under SQLite and
+    never trigger a naive/aware comparison error against aware datetimes.
+    """
+    return datetime.now(timezone.utc)
+
 
 logger = logging.getLogger("backend")
 if not logger.handlers:

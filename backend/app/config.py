@@ -36,7 +36,7 @@ class Settings:
     ML_REQUEST_TIMEOUT_S = float(os.getenv("ML_REQUEST_TIMEOUT_S", "30"))
 
     # --- Mode ---
-    DEBUG = os.getenv("DEBUG", "true").lower() == "true"
+    DEBUG = os.getenv("DEBUG", "false").lower() == "true"  # off in prod; enables SQL echo when on
 
 
 @lru_cache

@@ -14,7 +14,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from app.database import Base
+from app.database import Base, utcnow
 
 
 class Attempt(Base):
@@ -23,7 +23,7 @@ class Attempt(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     assessment_id = Column(Integer, ForeignKey("assessments.id"), nullable=False)
-    started_at = Column(DateTime, default=datetime.utcnow)
+    started_at = Column(DateTime, default=utcnow)
     submitted_at = Column(DateTime, nullable=True)
     # in_progress, submitted, graded, abandoned
     status = Column(String(20), default="in_progress")
@@ -34,7 +34,7 @@ class Attempt(Base):
     # ML analysis results stored as JSON string
     ml_analysis = Column(Text, default="{}")
     is_offline = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     user = relationship("User", back_populates="attempts", foreign_keys=[user_id])
     assessment = relationship("Assessment", back_populates="attempts")
@@ -63,7 +63,7 @@ class Answer(Base):
     # ML evaluation result for this answer: score 0-100, method, reasoning, etc.
     ml_evaluation = Column(Text, default="{}")
     time_spent_seconds = Column(Float, default=0.0)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     attempt = relationship("Attempt", back_populates="answers", foreign_keys=[attempt_id])
     user = relationship("User", back_populates="answers", foreign_keys=[user_id])

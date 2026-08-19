@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
-from app.database import Base
+from app.database import Base, utcnow
 
 
 class Company(Base):
@@ -13,7 +13,7 @@ class Company(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(120), unique=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     users = relationship("User", back_populates="company", foreign_keys="User.company_id")
     assessments = relationship("Assessment", back_populates="company")
@@ -29,7 +29,7 @@ class User(Base):
     role = Column(String(20), nullable=False)  # candidate, trainer, admin
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=True)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
     company = relationship("Company", back_populates="users", foreign_keys=[company_id])
     attempts = relationship("Attempt", back_populates="user", foreign_keys="Attempt.user_id")

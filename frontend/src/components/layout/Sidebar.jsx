@@ -5,6 +5,7 @@ import { navGroups, routeFor, roleName, roleTitle, roleInitials } from '../../da
 import { useAuth } from '../../context/AuthContext';
 import { ease } from '../../lib/motion';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import ShareWalkWidget from './ShareWalkWidget';
 
 export default function Sidebar({ mobileOpen, onCloseMobile }) {
   const { role, switchRole, logout } = useAuth();
@@ -113,7 +114,7 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
         ))}
       </motion.nav>
 
-      <div className="relative px-[18px] py-[16px] pb-[22px] border-t border-borderDim">
+      <div className="relative px-[18px] py-[16px] pb-[22px] border-t border-borderDim flex items-center justify-between gap-2">
         <AnimatePresence>
           {roleMenuOpen && (
             <motion.div
@@ -142,7 +143,7 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
           )}
         </AnimatePresence>
         <motion.button
-          className="flex items-center gap-2.5 w-full text-left"
+          className="flex items-center gap-2.5 flex-1 min-w-0 text-left"
           onClick={() => setRoleMenuOpen((v) => !v)}
           type="button"
           whileTap={{ scale: 0.98 }}
@@ -150,11 +151,12 @@ export default function Sidebar({ mobileOpen, onCloseMobile }) {
           <span className="w-[34px] h-[34px] flex-shrink-0 bg-green text-black flex items-center justify-center h-display text-[13px]">
             {roleInitials[role]}
           </span>
-          <span className="min-w-0">
+          <span className="min-w-0 flex-1">
             <div className="text-xs tracking-wide truncate">{roleName[role]}</div>
             <div className="text-[10px] text-textDim tracking-wide mt-0.5 truncate">{roleTitle[role]}</div>
           </span>
         </motion.button>
+        <ShareWalkWidget />
       </div>
     </>
   );

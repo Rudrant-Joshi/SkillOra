@@ -4,6 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import TopBar from '../components/layout/TopBar';
 import PageTransition from '../components/layout/PageTransition';
+import AiAssistant from '../components/layout/AiAssistant';
 
 export default function AppShell() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -27,6 +28,8 @@ export default function AppShell() {
           </AnimatePresence>
         </main>
       </div>
+
+      <AiAssistant />
     </div>
   );
 }
